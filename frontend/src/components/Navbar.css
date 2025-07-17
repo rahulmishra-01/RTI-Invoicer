@@ -1,0 +1,92 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(40, 82, 117);
+    color: white;
+    padding: 0.8rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.brand{
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+
+.navbar-right{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.navbar-right a,
+.navbar-right button{
+    color: white;
+    text-decoration: none;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    /* text-transform: uppercase; */
+}
+
+.navbar-right .profile-btn{
+    /* border: 1px solid black; */
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    background-color: rgb(206, 212, 111);
+    color: rgb(34, 94, 79);
+}
+
+.navbar-right .profile-btn:hover{
+    background-color: rgb(186, 192, 100);
+    color: rgb(22, 65, 53);
+}
+
+.navbar-profile{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.profile-pic{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.navbar-profile{
+    display: none;
+    font-size: 1.5rem;
+}
+
+/* Mobile Responsive */
+
+@media screen and (max-width:786px){
+    .navbar-right{
+        position: absolute;
+        top: 60px;
+        right: 1rem;
+        background-color: rgb(40, 82, 117);
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 1rem;
+        border-radius: 8px;
+        display: none;
+    }
+
+    .navbar-right.open{
+        display: flex;
+    }
+
+    .navbar-profile{
+        display: block;
+    }
+}

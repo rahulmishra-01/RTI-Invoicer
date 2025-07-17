@@ -1,0 +1,50 @@
+.dashboard{
+    border: 1px solid black;
+    max-width: 1300px;
+    width: 100%;
+}
+
+.dashboard h2{
+    text-align: left;
+}
+
+.stats{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    background-color: rgba(213, 220, 224, 0.349);
+    padding: 1rem;
+    /* border-radius: 8px; */
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.stats div{
+    /* border: 1px solid black; */
+    position: relative;
+    padding: 3rem 1.2rem;
+    font-size: 1.4rem;
+    border-radius: 0.8rem;
+    background-color: rgb(206, 212, 111);
+    /* box-shadow: 0 0 3px 0 rgb(22, 65, 53); */
+}
+
+.stats div .stats-name{
+    /* border: 1px solid black; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 1rem;
+    padding: 0.5rem;
+    background-color: rgb(206, 212, 111);
+}
+
+.stats div .stats-
+.dashboard-upper-nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1rem;
+}
