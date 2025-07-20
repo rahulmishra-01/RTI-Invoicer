@@ -1,8 +1,8 @@
 import { useState } from "react";
-import ProfileSidebar from "../components/ProfileSidebar.jsx";
-import UserInfo from "../components/UserInfo.jsx";
-import UserInvoices from "../components/UserInvoices.jsx";
-import "./Profile.css";
+import ProfileSidebar from "../../components/ProfileSidebar.jsx";
+import UserInfo from "../../components/UserInfo.jsx";
+import UserInvoices from "../../components/UserInvoices.jsx";
+import styles from "./Profile.module.css";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("info");

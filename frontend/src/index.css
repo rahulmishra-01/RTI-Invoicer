@@ -4,7 +4,7 @@
   box-sizing: border-box;
   font-family: sans-serif;
 }
-
+/* 
 .auth-form{
   max-width:400px;
   margin: 50px auto;
@@ -19,11 +19,11 @@
   margin: 0.5rem 0;
 }
 
-/* .dashboard{
+.dashboard{
   padding: 2rem;
   max-width: 900px;
   margin: auto;
-} */
+}
 
 
 table{
@@ -77,4 +77,4 @@ input.select{
 
 h2, h3{
   margin-top: 1rem;
-}
+} */

@@ -19,6 +19,10 @@ app.use("/api/invoices",invoiceRoutes);
 const userRoutes = require("./routes/user");
 app.use("/api/users",userRoutes)
 
+//Payments Routes
+const paymentRoutes = require("./routes/paymentRoutes");
+app.use("/api/payment", paymentRoutes);
+
 //MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {

@@ -1,4 +1,4 @@
-.profile-container {
+/* .profile-container {
   display: flex;
   min-height: 100vh;
   border: 1px solid black;
@@ -61,10 +61,10 @@
 
 .invoice-table button:hover {
   background: #ccc;
-}
+} */
 
 /* Responsive */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .profile-container {
     flex-direction: column;
   }
@@ -83,4 +83,4 @@
   .profile-content {
     padding: 10px;
   }
-}
+} */

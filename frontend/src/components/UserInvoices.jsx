@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "../pages/Profile.css";
+import "../pages/profile/Profile.module.css";
 
 const UserInvoices = () => {
   const [invoices, setInvoices] = useState([]);

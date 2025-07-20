@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "./Dashboard.css"
+import styles from "./dashboard.module.css"
 
 const Dashboard = () => {
   const [invoices, setInvoices] = useState([]);
@@ -41,9 +41,13 @@ const Dashboard = () => {
     fetchInvoices();
   },[]);
 
+  console.log(invoices)
+
   const countStatus = (status) => {
-    invoices.filter((inv) => inv.status === status).length;
+    return invoices.filter((inv) => inv.status === status).length;
   };
+
+  console.log(countStatus("unpaid"))
 
   const downloadInvoicePDF = async (id, filename) => {
     try {
@@ -73,10 +77,10 @@ const Dashboard = () => {
   return (
     <>
       {loading && <p>Loading...</p>}
-      <div className="dashboard">
-        <div className="dashboard-upper-nav">
+      <div className={styles.dashboard}>
+        <div className={styles.dashboardUpperNav}>
           <h2>Welcome, {user?.name}</h2>
-        <button
+        {/* <button
           onClick={() => {
             localStorage.clear();
             window.location.href = "/login";
@@ -84,48 +88,52 @@ const Dashboard = () => {
           className="logout-btn"
         >
           Logout
-        </button>
+        </button> */}
         </div>
 
-        <div className="stats">
-          <div><span className="stats-name">Total Invoices</span><span className="stats-value">{invoices.length}</span></div>
-          <div>Paid: {countStatus("paid")}</div>
-          <div>Unpaid: {countStatus("unpaid")}</div>
-          <div>Overdue: {countStatus("overdue")}</div>
+        <div className={styles.stats}>
+          <div className={styles.statsBox}><div className={styles.statsBoxValues}><span className={styles.statsValue}>{`${invoices.length}`}</span><span className={styles.statsName}>Total Invoices</span></div></div>
+          <div className={styles.statsBox}><div className={styles.statsBoxValues}><span className={styles.statsValue}>{countStatus("paid")}</span><span className={styles.statsName}>Paid</span></div></div>
+          <div className={styles.statsBox}><div className={styles.statsBoxValues}><span className={styles.statsValue}>{countStatus("unpaid")}</span><span className={styles.statsName}>Unpaid</span></div></div>
+          <div className={styles.statsBox}><div className={styles.statsBoxValues}><span className={styles.statsValue}>{countStatus("overdue")}</span><span className={styles.statsName}>Overdue</span></div></div>
         </div>
-
-        <h3>Invoice List</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Invoice No</th>
-              <th>Date</th>
-              <th>Buyer</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>PDF</th>
+        <h3 className={styles.invoiceTableHeader}>Invoice List</h3>
+        <table className={styles.table}>
+          <thead className={styles.tableHead}>
+            <tr className={styles.tableRow}>
+              <th className={styles.tableHeading}>Invoice No</th>
+              <th className={styles.tableHeading}>Date</th>
+              <th className={styles.tableHeading}>Buyer</th>
+              <th className={styles.tableHeading}>Total</th>
+              <th className={styles.tableHeading}>Status</th>
+              <th className={styles.tableHeading}>PDF</th>
             </tr>
           </thead>
           <tbody>
             {invoices.map((inv) => (
               <tr key={inv._id}>
-                <td>{inv.invoiceNumber}</td>
-                <td>{new Date(inv.invoiceDate).toLocaleDateString()}</td>
-                <td>{inv.buyerDetails?.name}</td>
-                <td>₹{inv.totalAmount}</td>
-                <td>{inv.status}</td>
-                <td>
-                  <button
+                <td className={styles.tableData}>{inv.invoiceNumber}</td>
+                <td className={styles.tableData}>{new Date(inv.invoiceDate).toLocaleDateString()}</td>
+                <td className={styles.tableData}>{inv.buyerDetails?.name}</td>
+                <td className={styles.tableData}>₹{Math.floor(inv.totalAmount)}</td>
+                <td className={styles.tableData}>{inv.status}</td>
+                <td className={[styles.tableData,styles.tablesBtn].join(" ")}>
+                  <button className={[styles.downloadBtn,styles.pdfBtn].join(" ")}
                     onClick={() => downloadInvoicePDF(inv._id,`${inv.invoiceNumber}.pdf`)}
                   >
                     Download
+                  </button>
+                  <button className={[styles.viewBtn,styles.pdfBtn].join(" ")} onClick={() => {
+                    console.log(inv)
+                  }}>
+                    view
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <button
+        {/* <button
           style={{
             background: "#f33",
             color: "#fff",
@@ -138,7 +146,7 @@ const Dashboard = () => {
           }}
         >
           Logout
-        </button>
+        </button> */}
       </div>
     </>
   );

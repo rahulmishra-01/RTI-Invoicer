@@ -3,6 +3,42 @@ import axios from "axios";
 
 const Subscription = () => {
 
+    const handlePayment = async () => {
+        try {
+            const res = await axios.post("http://localhost:5000/api/payment/create-order",{
+                amount: 500,
+                currency: "INR",
+            });
+
+            const {id:order_id, amount, currency} = res.data;
+
+            const options = {
+                key:"rzp_test_eatSqgeoJFs0at",
+                amount:amount,
+                currency:currency,
+                name:"RTI INVOICER",
+                description: "Test Transaction",
+                order_id:order_id,
+                handler:(response) => {
+                    alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
+                },
+                prefill:{
+                    name:"Rahul",
+                    email:"rahulmishramail.work@gmail.com",
+                    contact:"6306249827",
+                },
+                theme:{
+                    color:"#3399cc",
+                },
+            };
+
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
+        } catch (error) {
+            console.error("Payment initiation failed:",error);
+        }
+    };
+
     const handleSubscribe = async (plan) => {
         try {
             const res = await axios.put("http://localhost:5000/api/users/plan",{plan},{
@@ -41,7 +77,7 @@ const Subscription = () => {
                         <li>✔ Detailed Analytics</li>
                         <li>✔ Company Branding</li>
                     </ul>
-                    <button onClick={() => handleSubscribe("premium")}>Upgrade Now</button>
+                    <button onClick={handlePayment}>Upgrade Now</button>
                 </div>
             </div>
         </div>

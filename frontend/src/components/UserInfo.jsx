@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "../pages/Profile.css"; // Reuse same CSS
+import "../pages/profile/Profile.module.css"; // Reuse same CSS
 
 const UserInfo = () => {
   const [formData, setFormData] = useState({

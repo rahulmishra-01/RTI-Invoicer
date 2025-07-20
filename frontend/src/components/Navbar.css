@@ -1,8 +1,14 @@
+.container{
+    background-color: rgb(40, 82, 117);
+
+}
 .navbar{
+    /* border: 1px solid black; */
+    max-width: 1300px;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(40, 82, 117);
     color: white;
     padding: 0.8rem 1rem;
     position: sticky;

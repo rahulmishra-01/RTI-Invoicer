@@ -19,7 +19,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <div className="container">
+      <nav className="navbar">
       <div className="navbar-left">
         <Link to="/dashboard" className="brand">
           RTI Invoicer
@@ -47,6 +48,7 @@ const Navbar = () => {
         <div className="hamburger">☰</div>
       </div>
     </nav>
+    </div>
   );
 };
 
