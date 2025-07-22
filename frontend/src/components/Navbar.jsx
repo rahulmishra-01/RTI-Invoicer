@@ -31,6 +31,7 @@ const Navbar = () => {
         <Link to="/dashboard" onClick={() => setMenuOpen(false)}>
           Dashboard
         </Link>
+        <Link to="/subscription" onClick={() => setMenuOpen(false)}>Subscription</Link>
         <Link to="/create" onClick={() => setMenuOpen(false)}>
           Create Invoice
         </Link>

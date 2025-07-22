@@ -1,4 +1,4 @@
-import "./Subscription.css";
+import styles from "./Subscription.module.css";
 import axios from "axios";
 
 const Subscription = () => {
@@ -53,10 +53,11 @@ const Subscription = () => {
         }
     }
     return(
-        <div className="subscription-page">
+        <div className={styles.subscriptionPageContainer}>
             <h1>Choose Your Plan</h1>
-            <div className="plans">
-                <div className="plan-card free">
+            <div className={styles.plansContainer}>
+                <div className={styles.plans}>
+                <div className={[styles.planCard, styles.free].join(" ")}>
                     <h2>Free Plan</h2>
                     <ul>
                         <li>✔ Create up to 10 invoices</li>
@@ -68,7 +69,7 @@ const Subscription = () => {
                     <button onClick={() => handleSubscribe("free")}>Get Started</button>
                 </div>
 
-                <div className="plan-card premium">
+                <div className={[styles.planCard, styles.premium].join(" ")}>
                     <h2>Premium Plan</h2>
                     <ul>
                         <li>✔ Unlimited Invoices</li>
@@ -77,8 +78,14 @@ const Subscription = () => {
                         <li>✔ Detailed Analytics</li>
                         <li>✔ Company Branding</li>
                     </ul>
-                    <button onClick={handlePayment}>Upgrade Now</button>
+                    <button
+                    //  onClick={handlePayment}
+                     onClick={() => handleSubscribe("premium")}
+                     >
+                        Upgrade Now
+                     </button>
                 </div>
+            </div>
             </div>
         </div>
     );

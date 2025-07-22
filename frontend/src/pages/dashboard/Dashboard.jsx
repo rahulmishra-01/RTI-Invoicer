@@ -1,12 +1,34 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./dashboard.module.css"
+import { useNavigate } from "react-router-dom";
+import { pdf } from "@react-pdf/renderer";
+import InvoicePDF from "../../components/InvoicePDF";
+
+
+
 
 const Dashboard = () => {
   const [invoices, setInvoices] = useState([]);
+  const [userData,setUserData] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
   const [loading, setLoading] = useState(false);
   const [invoiceCount, setInvoiceCount] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/users/me",{
+          headers:{Authorization:`Bearer ${localStorage.getItem("token")}`}
+        });
+        setUserData(res.data);
+      } catch (error) {
+        alert("Failed to fetch userData");
+      }
+    };
+    fetchUserData();
+  },[]);
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -33,7 +55,7 @@ const Dashboard = () => {
           },
         })
         setInvoiceCount(res.data.length);
-        console.log(res.data.length)
+        // console.log(res.data.length)
       } catch (error) {
         console.error("Failed to fetch invoices",error);
       }
@@ -41,45 +63,58 @@ const Dashboard = () => {
     fetchInvoices();
   },[]);
 
-  console.log(invoices)
+  // console.log(invoices)
 
   const countStatus = (status) => {
     return invoices.filter((inv) => inv.status === status).length;
   };
 
-  console.log(countStatus("unpaid"))
+  // console.log(countStatus("unpaid"))
 
-  const downloadInvoicePDF = async (id, filename) => {
-    try {
-      const res = await axios.get(`http://localhost:5000/api/invoices/${id}/pdf`,{
-        responseType: "blob",
-        headers:{
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-      });
+  // const downloadInvoicePDF = async (id, filename) => {
+  //   try {
+  //     const res = await axios.get(`http://localhost:5000/api/invoices/${id}/pdf`,{
+  //       responseType: "blob",
+  //       headers:{
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`
+  //       }
+  //     });
 
-      const blob = new Blob([res.data],{type:"application/pdf"});
-      const url = window.URL.createObjectURL(blob);
+  //     const blob = new Blob([res.data],{type:"application/pdf"});
+  //     const url = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.download = filename;
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     link.remove();
 
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      alert("Download failed");
-      console.error(error);
-    }
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (error) {
+  //     alert("Download failed");
+  //     // console.error(error);
+  //   }
+  // };
+
+  const downloadPDF = async (invoice) => {
+    const blob = await pdf(<InvoicePDF invoice={invoice}/>).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${invoice.invoiceNumber}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
+
+
   return (
     <>
       {loading && <p>Loading...</p>}
       <div className={styles.dashboard}>
         <div className={styles.dashboardUpperNav}>
           <h2>Welcome, {user?.name}</h2>
+          <h3>{userData?.plan}</h3>
         {/* <button
           onClick={() => {
             localStorage.clear();
@@ -89,6 +124,7 @@ const Dashboard = () => {
         >
           Logout
         </button> */}
+        {console.log(userData)}
         </div>
 
         <div className={styles.stats}>
@@ -119,13 +155,12 @@ const Dashboard = () => {
                 <td className={styles.tableData}>{inv.status}</td>
                 <td className={[styles.tableData,styles.tablesBtn].join(" ")}>
                   <button className={[styles.downloadBtn,styles.pdfBtn].join(" ")}
-                    onClick={() => downloadInvoicePDF(inv._id,`${inv.invoiceNumber}.pdf`)}
+                    // onClick={() => downloadInvoicePDF(inv._id,`${inv.invoiceNumber}.pdf`)}
+                    onClick={() => downloadPDF(inv)}
                   >
                     Download
                   </button>
-                  <button className={[styles.viewBtn,styles.pdfBtn].join(" ")} onClick={() => {
-                    console.log(inv)
-                  }}>
+                  <button className={[styles.viewBtn,styles.pdfBtn].join(" ")} onClick={() => navigate(`/invoices/${inv._id}/preview`)}>
                     view
                   </button>
                 </td>

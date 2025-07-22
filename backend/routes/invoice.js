@@ -67,6 +67,16 @@ router.get("/:id/pdf",authMiddleware, async (req,res) => {
     }
 });
 
+router.get("/:id", authMiddleware, async (req,res) => {
+    try {
+        const invoice = await Invoice.findOne({_id:req.params.id, userId:req.userId});
+        if(!invoice) return res.status(404).json({message: "Invoice not found"});
+        res.json(invoice);
+    } catch (err) {
+        res.status(500).json({messge:"Failed to fetch invoice",error:err.message})
+    }
+});
+
 router.delete("/:id",authMiddleware,async(req,res) => {
     try {
         const invoice = await Invoice.findOneAndDelete({_id:req.params.id,userId:req.userId});

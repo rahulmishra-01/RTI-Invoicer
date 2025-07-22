@@ -8,7 +8,7 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("info");
 
   return(
-    <div className="profile-container">
+    <div className={styles.profileContainer}>
       <ProfileSidebar activeTab={activeTab} setActiveTab={setActiveTab}/>
       <div className="profile-content">
         {activeTab === "info" && <UserInfo/>}

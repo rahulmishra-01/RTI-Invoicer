@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "../pages/profile/Profile.module.css";
+import styles from "../pages/profile/Profile.module.css";
 
 const UserInvoices = () => {
   const [invoices, setInvoices] = useState([]);
@@ -52,9 +52,9 @@ const UserInvoices = () => {
     <div className="user-invoices">
       <h2>📄 Your Invoices</h2>
       <div className="invoice-table-wrapper">
-        <table className="invoice-table">
-          <thead>
-            <tr>
+        <table className={styles.table}>
+          <thead className={styles.tableHead}>
+            <tr className={styles.tableRow}>
               <th>Invoice #</th>
               <th>Date</th>
               <th>Buyer</th>
@@ -69,11 +69,11 @@ const UserInvoices = () => {
                 <td>{inv.invoiceNumber}</td>
                 <td>{new Date(inv.invoiceDate).toLocaleDateString()}</td>
                 <td>{inv.buyerDetails?.name}</td>
-                <td>₹{inv.totalAmount}</td>
+                <td>₹{Math.floor(inv.totalAmount)}</td>
                 <td>{inv.status}</td>
-                <td>
-                  <button onClick={() => handleDownload(inv._id)}>📥</button>
-                  <button onClick={() => handleDelete(inv._id)}>🗑️</button>
+                <td className={styles.tablesBtn}>
+                  <button  onClick={() => handleDownload(inv._id)}>Download</button>
+                  <button  onClick={() => handleDelete(inv._id)}>Delete</button>
                 </td>
               </tr>
             ))}

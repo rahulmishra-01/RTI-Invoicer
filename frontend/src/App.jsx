@@ -7,8 +7,8 @@ import Navbar from "./components/Navbar";
 import Profile from "./pages/profile/Profile";
 import Subscription from "./pages/subscription/Subscription";
 import "./App.css"
-import PdfViewer from "./components/PdfViewer";
-import InvoicePage from "./pages/InvoicePage";
+// import InvoicePage from "./pages/InvoicePage";
+import InvoicePreview from "./pages/InvoicePreview";
 import HomePage from "./pages/home/HomePage";
 
 const PrivateRoute = ({children}) => {
@@ -36,7 +36,7 @@ const App = () => {
       <Route path="/create" element={<PrivateRoute><CreateInvoice/></PrivateRoute>}/>
       <Route path="/profile" element={<PrivateRoute><Profile/></PrivateRoute>}/>
       <Route path="/subscription" element={<PrivateRoute><Subscription/></PrivateRoute>}/>
-      <Route path="/pdfViewer" element={<PrivateRoute><InvoicePage/></PrivateRoute>}/>
+      <Route path="/invoices/:id/preview" element={<PrivateRoute><InvoicePreview/></PrivateRoute>}/>
       <Route path="*" element={<h2 style={{textAlign:"center", marginTop:"2rem"}}>404 - Page Not Found</h2>}/>
     </Routes>
     </>

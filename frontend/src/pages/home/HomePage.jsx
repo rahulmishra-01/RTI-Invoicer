@@ -8,7 +8,8 @@ import smartDashboardImage from "../../assets/images/smartDashboard.png";
 const HomePage = () => {
   return (
     <div className={styles.container}>
-      <div className={styles.hero}>
+      <div className={styles.heroContainer}>
+        <div className={styles.hero}>
         <h1 className={styles.heroHeading}>Simplify Your Invoicing with <br />RTI Invoice Maker</h1>
         <p className={styles.heroPara}>
           Create professional invoices in minutes. Track payments, manage clients, and
@@ -22,6 +23,7 @@ const HomePage = () => {
             <button className={[styles.btn,styles.green,styles.greenOutline].join(" ")}>View Dashboard</button>
           </Link>
         </div>
+      </div>
       </div>
 
       <section className={styles.features}>
@@ -59,7 +61,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      <footer className={styles.footer}>
+      <div className={styles.footerContainer}>
+        <footer className={styles.footer}>
         <div className={styles.mainFooter}>
           <div className={styles.footerLeft}>
           <h3 className={styles.footerLogo}>RTI INVOICER</h3>
@@ -94,6 +97,7 @@ const HomePage = () => {
           <p>© {new Date().getFullYear()} RTI Invoicer. All rights reserved.</p>
         </div>
       </footer>
+      </div>
     </div>
   );
 };
