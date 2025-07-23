@@ -5,7 +5,7 @@ const cors = require("cors");
 
 const app = express();
 app.use(cors({
-  origin: "http://localhost:5173", // your frontend origin
+  origin: "https://rtinvoicer.netlify.app/", // your frontend origin
   credentials: true,
 }));
 app.use(express.json());
