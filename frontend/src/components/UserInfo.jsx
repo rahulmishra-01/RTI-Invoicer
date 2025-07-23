@@ -207,7 +207,7 @@ const UserInfo = () => {
           </div>
           <div className={[styles.ProfileIfscCodeInput,styles.ProfileUserInfoInputSection].join(" ")}>
             <label htmlFor="profileIfscCode">IFSC Code</label>
-            <input type="text" id="profileIfscCode" name="ifscCode" placeholder="IFSC Code" value={formData.ifsc} onChange={handleChange}/>
+            <input type="text" id="profileIfscCode" name="ifsc" placeholder="IFSC Code" value={formData.ifsc} onChange={handleChange}/>
           </div>
           <div className={[styles.ProfileBranchInput,styles.ProfileUserInfoInputSection].join(" ")}>
             <label htmlFor="profileBranch">Branch</label>

@@ -3,9 +3,20 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://rtinvoicer.netlify.app",
+];
+
 const app = express();
 app.use(cors({
-  origin: "https://rtinvoicer.netlify.app", // your frontend origin
+  origin: (origin, callback) => {
+    if(origin || allowedOrigins.includes(origin)){
+        callback(null, true);
+    }else{
+        callback(new Error("Not allowed by CORS"))
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());
