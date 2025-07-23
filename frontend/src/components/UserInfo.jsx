@@ -73,7 +73,7 @@ const UserInfo = () => {
 
     if(e.target.name === "pinCode" && e.target.value.length === 6){
       try {
-        const res = await axios.get(`httpss://api.postalpincode.in/pincode/${e.target.value}`);
+        const res = await axios.get(`https://api.postalpincode.in/pincode/${e.target.value}`);
         const data = res.data[0];
 
         if(data.Status === "Success"){
