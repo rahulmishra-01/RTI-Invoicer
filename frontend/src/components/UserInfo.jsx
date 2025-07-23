@@ -30,7 +30,7 @@ const UserInfo = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users/me", {
+        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/users/me", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -73,7 +73,7 @@ const UserInfo = () => {
 
     if(e.target.name === "pinCode" && e.target.value.length === 6){
       try {
-        const res = await axios.get(`https://api.postalpincode.in/pincode/${e.target.value}`);
+        const res = await axios.get(`httpss://api.postalpincode.in/pincode/${e.target.value}`);
         const data = res.data[0];
 
         if(data.Status === "Success"){
@@ -103,7 +103,7 @@ const UserInfo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put("http://localhost:5000/api/users/me", formData, {
+      await axios.put("https://rti-invoicer-production.up.railway.app/api/users/me", formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

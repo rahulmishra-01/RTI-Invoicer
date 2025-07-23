@@ -11,7 +11,7 @@ const CreateInvoice = () => {
    useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users/me",{
+        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/users/me",{
           headers:{Authorization:`Bearer ${localStorage.getItem("token")}`}
         });
         setUserData(res.data);
@@ -86,7 +86,7 @@ const CreateInvoice = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users/me", {
+        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/users/me", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -119,7 +119,7 @@ const CreateInvoice = () => {
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/invoices/user",{
+        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/invoices/user",{
           headers:{Authorization:`Bearer ${localStorage.getItem("token")}`},
         });
         setInvoiceCount(res.data.length)
@@ -134,7 +134,7 @@ const CreateInvoice = () => {
   useEffect(() => {
     const checkPlan = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users/me",{
+        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/users/me",{
           headers:{Authorization:`Bearer ${localStorage.getItem("token")}`},
         });
 
@@ -153,7 +153,7 @@ const CreateInvoice = () => {
   useEffect(() => {
     const InvoiceNumber = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/invoices/new-invoice-number");
+        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/invoices/new-invoice-number");
         setForm((prevForm) => ({
           ...prevForm,
           invoiceNumber: res.data.invoiceNumber,
@@ -210,12 +210,12 @@ const CreateInvoice = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(userData.plan === "free" && invoiceCount >= 10){
+    if(userData.plan === "free" && invoiceCount >= 3){
         alert("Invoice limit reached for Free Plan. Upgrade to Premium.")
         return;
       }
     try {
-      await axios.post("http://localhost:5000/api/invoices", form, {
+      await axios.post("https://rti-invoicer-production.up.railway.app/api/invoices", form, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

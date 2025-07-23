@@ -5,7 +5,7 @@ const Subscription = () => {
 
     const handlePayment = async () => {
         try {
-            const res = await axios.post("http://localhost:5000/api/payment/create-order",{
+            const res = await axios.post("https://rti-invoicer-production.up.railway.app/api/payment/create-order",{
                 amount: 500,
                 currency: "INR",
             });
@@ -41,7 +41,7 @@ const Subscription = () => {
 
     const handleSubscribe = async (plan) => {
         try {
-            const res = await axios.put("http://localhost:5000/api/users/plan",{plan},{
+            const res = await axios.put("https://rti-invoicer-production.up.railway.app/api/users/plan",{plan},{
                 headers:{
                     Authorization:`Bearer ${localStorage.getItem("token")}`,
                 }
@@ -80,7 +80,8 @@ const Subscription = () => {
                     </ul>
                     <button
                     //  onClick={handlePayment}
-                     onClick={() => handleSubscribe("premium")}
+                    //  onClick={() => handleSubscribe("premium")}
+                    onClick={() => {alert("Not available for testing server")}}
                      >
                         Upgrade Now
                      </button>

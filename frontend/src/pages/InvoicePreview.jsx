@@ -12,7 +12,7 @@ const InvoicePreview = () => {
 
     useEffect(() => {
         const fetchInvoice = async () => {
-            const res = await axios.get(`http://localhost:5000/api/invoices/${id}`,{
+            const res = await axios.get(`https://rti-invoicer-production.up.railway.app/api/invoices/${id}`,{
                 headers:{
                     Authorization:`Bearer ${localStorage.getItem("token")}`,
                 },
