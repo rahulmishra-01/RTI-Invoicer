@@ -24,11 +24,12 @@ const paymentRoutes = require("./routes/paymentRoutes");
 app.use("/api/payment", paymentRoutes);
 
 //MongoDB connection
+const Port = process.env.PORT;
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
     console.log("MongoDB connected");
-    app.listen(5000,() => {
-        console.log(`Server running on port: http://localhost:5000`)
+    app.listen(Port,() => {
+        console.log(`Server running on port: http://localhost:${Port}`)
     })
 }).catch((err) => {
     console.error("MongoDB Error",err)
