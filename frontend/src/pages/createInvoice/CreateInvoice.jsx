@@ -22,19 +22,20 @@ const CreateInvoice = () => {
     fetchUserData();
   },[]);
 
-  const generateInvoiceNumber = () => {
-    const year = new Date().getFullYear();
-    const nextYear = year + 1;
-    const random = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
-    return `CPT/${year}-${String(nextYear).slice(-2)}/${random}`;
-  };
+  // const generateInvoiceNumber = () => {
+  //   const year = new Date().getFullYear();
+  //   const nextYear = year + 1;
+  //   const random = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
+  //   return `CPT/${year}-${String(nextYear).slice(-2)}/${random}`;
+  // };
+
 
   const generateBuyerOrderNumber = () => {
     return `GEMC-${Math.floor(1000000000000000 + Math.random() * 9000000000000000)}`;
   };
 
   const [form, setForm] = useState({
-    invoiceNumber: generateInvoiceNumber(),
+    invoiceNumber: "",
     invoiceDate: new Date().toISOString().split("T")[0],
     buyerOrderNumber: generateBuyerOrderNumber(),
     buyerOrderDate: new Date().toISOString().split("T")[0],
@@ -97,7 +98,7 @@ const CreateInvoice = () => {
           sellerDetails: {
             name: seller.name || "",
             address: seller.address || "",
-            pincode: seller.pincode || "",
+            pincode: seller.pinCode || "",
             gstin: seller.gstin || "",
             state: seller.state || "",
             stateCode: seller.stateCode || "",
@@ -148,6 +149,23 @@ const CreateInvoice = () => {
 
     if(invoiceCount > 0) checkPlan();
   },[invoiceCount]);
+
+  useEffect(() => {
+    const InvoiceNumber = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/invoices/new-invoice-number");
+        setForm((prevForm) => ({
+          ...prevForm,
+          invoiceNumber: res.data.invoiceNumber,
+        }));
+
+        {console.log(res)}
+      } catch (error) {
+        console.error("Failed to fetch invoice number:", error)
+      }
+    };
+    InvoiceNumber();
+  },[]);
 
   const handleChange = (section, field, value) => {
     setForm((prev) => ({
@@ -245,10 +263,10 @@ const CreateInvoice = () => {
             <label htmlFor="name">State *</label>
           <input type="text" placeholder="State" value={form.sellerDetails.state} onChange={(e) => handleChange("sellerDetails","state",e.target.value)} required/>
           </div>
-          <div className={[styles.sellerInputSection, styles.sellerStateCodeInput].join(" ")}>
+          {/* <div className={[styles.sellerInputSection, styles.sellerStateCodeInput].join(" ")}>
             <label htmlFor="name">StateCode *</label>
           <input type="text" placeholder="State Code" value={form.sellerDetails.stateCode} onChange={(e) => handleChange("sellerDetails", "stateCode", e.target.value)} required/>
-          </div>
+          </div> */}
           <div className={[styles.sellerInputSection, styles.sellerPanInput].join(" ")}>
             <label htmlFor="name">PAN *</label>
           <input type="text" placeholder="PAN" value={form.sellerDetails.pan} onChange={(e) => handleChange("sellerDetails","pan",e.target.value)} required/>

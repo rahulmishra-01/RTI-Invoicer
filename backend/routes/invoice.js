@@ -44,6 +44,15 @@ router.post("/",authMiddleware, async (req,res) => {
     }
 });
 
+router.get("/new-invoice-number", async (req,res) => {
+    try {
+        const invoiceNumber = await generateInvoiceNumber();
+        res.json({invoiceNumber});
+    } catch (error) {
+        res.status(500).json({error:"Failed to generate invoice number"});
+    }
+})
+
 router.get("/:id/pdf",authMiddleware, async (req,res) => {
     try {
         console.log("Token User ID:", req.userId);

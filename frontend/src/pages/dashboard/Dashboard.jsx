@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./dashboard.module.css"
+import styles from "./Dashboard.module.css"
 import { useNavigate } from "react-router-dom";
 import { pdf } from "@react-pdf/renderer";
 import InvoicePDF from "../../components/InvoicePDF";

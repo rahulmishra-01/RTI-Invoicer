@@ -1,6 +1,7 @@
 const PDFDocument = require("pdfkit");
 const numberToWords = require("number-to-words");
 const Invoice = require("../models/Invoice");
+const Counter = require("../models/Counter");
 
 exports.generateInvoicePDF = (invoice) => {
   return new Promise((resolve, reject) => {
@@ -120,8 +121,14 @@ exports.generateInvoicePDF = (invoice) => {
 };
 
 exports.generateInvoiceNumber = async () => {
-  const count = await Invoice.countDocuments();
-  const serial = String(count + 1).padStart(4, "0");
   const year = "2025-26";
+
+  const counter = await Counter.findOneAndUpdate(
+    {name:"invoice"},
+    {$inc:{seq:1}},
+    {new:true, upsert:true}
+  );
+
+  const serial = String(counter.seq).padStart(4, "0");
   return `CPT/${year}/${serial}`;
 };
