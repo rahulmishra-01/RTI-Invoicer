@@ -220,7 +220,7 @@ const UserInfo = () => {
           <button
           onClick={() => {
             localStorage.clear();
-            window.location.href = "/login";
+            window.location.href = "/";
           }}
           className="logout-btn"
         >
