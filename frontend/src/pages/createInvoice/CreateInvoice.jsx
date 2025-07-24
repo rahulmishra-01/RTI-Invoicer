@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./CreateInvoice.module.css";
+import { toast } from "react-toastify";
 
 const CreateInvoice = () => {
   const [invoiceCount, setInvoiceCount] = useState(0);
@@ -233,10 +234,10 @@ const CreateInvoice = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      alert("Invoice created successfully!");
       navigate("/dashboard");
+      toast.success("Invoice created successfully!");
     } catch (error) {
-      alert("Failed to create invoice");
+      toast.error("Failed to create invoice");
     }
   };
 
