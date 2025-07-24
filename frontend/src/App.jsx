@@ -10,6 +10,7 @@ import "./App.css"
 // import InvoicePage from "./pages/InvoicePage";
 import InvoicePreview from "./pages/InvoicePreview";
 import HomePage from "./pages/home/HomePage";
+import OtpPage from "./pages/login/OtpPage";
 
 const PrivateRoute = ({children}) => {
   const token = localStorage.getItem("token");
@@ -31,6 +32,7 @@ const App = () => {
       <Route path="/" element={isLoggedIn ? <Navigate to="dashboard"/>:<Login/>}/>
       <Route path="/home" element={<HomePage/>}/>
       <Route path="/login" element={<RedirectIfLoggedIn><Login/></RedirectIfLoggedIn>} />
+      <Route path="/otp" element={<OtpPage/>}/>
       <Route path="/signup" element={<RedirectIfLoggedIn><Signup/></RedirectIfLoggedIn>}/>
       <Route path="/dashboard" element={<PrivateRoute><Dashboard/></PrivateRoute>}/>
       <Route path="/create" element={<PrivateRoute><CreateInvoice/></PrivateRoute>}/>

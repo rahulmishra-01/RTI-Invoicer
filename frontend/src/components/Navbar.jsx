@@ -10,7 +10,7 @@ const Navbar = () => {
   const token = localStorage.getItem("token");
 
   //hide navbar on Login/Signup
-  if (location.pathname === "/login" || location.pathname === "/signup")
+  if (location.pathname === "/login" || location.pathname === "/signup" || location.pathname === "/otp" || location.pathname === "/invoices")
     return null;
 
   const handleLogout = () => {

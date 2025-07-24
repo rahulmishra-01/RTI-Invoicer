@@ -30,7 +30,7 @@ const UserInfo = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/users/me", {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -103,7 +103,7 @@ const UserInfo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put("https://rti-invoicer-production.up.railway.app/api/users/me", formData, {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -217,6 +217,15 @@ const UserInfo = () => {
         </div>
 
         <div className={styles.saveChangesBtn}>
+          <button
+          onClick={() => {
+            localStorage.clear();
+            window.location.href = "/login";
+          }}
+          className="logout-btn"
+        >
+          Logout
+        </button>
           <button type="submit">💾 Save Changes</button>
         </div>
       </form>

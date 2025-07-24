@@ -19,7 +19,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/users/me",{
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`,{
           headers:{Authorization:`Bearer ${localStorage.getItem("token")}`}
         });
         setUserData(res.data);
@@ -34,7 +34,7 @@ const Dashboard = () => {
     const fetchInvoices = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/invoices/user", {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/user`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setInvoices(res.data);
@@ -49,7 +49,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/invoices/user",{
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/user`,{
           headers:{
             Authorization:`Bearer ${localStorage.getItem("token")}`
           },
@@ -73,7 +73,7 @@ const Dashboard = () => {
 
   // const downloadInvoicePDF = async (id, filename) => {
   //   try {
-  //     const res = await axios.get(`https://rti-invoicer-production.up.railway.app/api/invoices/${id}/pdf`,{
+  //     const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/${id}/pdf`,{
   //       responseType: "blob",
   //       headers:{
   //         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -115,15 +115,6 @@ const Dashboard = () => {
         <div className={styles.dashboardUpperNav}>
           <h2>Welcome, {user?.name}</h2>
           <h3>{userData?.plan}</h3>
-        {/* <button
-          onClick={() => {
-            localStorage.clear();
-            window.location.href = "/login";
-          }}
-          className="logout-btn"
-        >
-          Logout
-        </button> */}
         {console.log(userData)}
         </div>
 

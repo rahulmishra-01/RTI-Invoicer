@@ -90,6 +90,7 @@
   padding-right: 20px;
   display: flex;
   justify-content: right;
+  gap: 10px;
 }
 .saveChangesBtn button{
     padding: 6px 12px;

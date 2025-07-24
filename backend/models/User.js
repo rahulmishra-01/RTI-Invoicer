@@ -23,5 +23,7 @@ const userSchema = new mongoose.Schema({
         enum:["free","premium"],
         default: "free",
     },
+    otp:{type:String},
+    otpExpires:{type:Date},
 },{timestamps:true})
 module.exports = mongoose.model("User",userSchema);

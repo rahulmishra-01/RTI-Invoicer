@@ -11,7 +11,7 @@ const CreateInvoice = () => {
    useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/users/me",{
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`,{
           headers:{Authorization:`Bearer ${localStorage.getItem("token")}`}
         });
         setUserData(res.data);
@@ -86,7 +86,7 @@ const CreateInvoice = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/users/me", {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -119,7 +119,7 @@ const CreateInvoice = () => {
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
-        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/invoices/user",{
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/user`,{
           headers:{Authorization:`Bearer ${localStorage.getItem("token")}`},
         });
         setInvoiceCount(res.data.length)
@@ -134,7 +134,7 @@ const CreateInvoice = () => {
   useEffect(() => {
     const checkPlan = async () => {
       try {
-        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/users/me",{
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`,{
           headers:{Authorization:`Bearer ${localStorage.getItem("token")}`},
         });
 
@@ -153,7 +153,7 @@ const CreateInvoice = () => {
   useEffect(() => {
     const InvoiceNumber = async () => {
       try {
-        const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/invoices/new-invoice-number");
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/new-invoice-number`);
         setForm((prevForm) => ({
           ...prevForm,
           invoiceNumber: res.data.invoiceNumber,
@@ -193,11 +193,14 @@ const CreateInvoice = () => {
   };
 
   const addProduct = () => {
-    setForm({
-      ...form,
-      products: [...form.products, { description: "", hsn: "", quantity: 1, rate: 0, discount: 0, tax: 0, amount: 0 }],
-    });
-  };
+  setForm((prevForm) => ({
+    ...prevForm,
+    products: [
+      ...prevForm.products,
+      { description: "", hsn: "", quantity: 1, rate: 0, discount: 0, tax: 0, amount: 0 },
+    ],
+  }));
+};
 
   const copyBuyerToShip = (e) => {
     if (e.target.checked) {
@@ -208,6 +211,16 @@ const CreateInvoice = () => {
     }
   };
 
+  const handleDeleteProduct = (indexToDelete) => {
+    if(form.products.length <= 1) return;
+    const updatedProducts = form.products.filter((_,index) => index !== indexToDelete);
+
+    setForm((prevForm) => ({
+      ...prevForm,
+      products: updatedProducts,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(userData.plan === "free" && invoiceCount >= 3){
@@ -215,7 +228,7 @@ const CreateInvoice = () => {
         return;
       }
     try {
-      await axios.post("https://rti-invoicer-production.up.railway.app/api/invoices", form, {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/invoices`, form, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -445,6 +458,7 @@ const CreateInvoice = () => {
                 <th>Discount %</th>
                 <th>Tax %</th>
                 <th>Amount</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody className={styles.productTableBody}>
@@ -458,6 +472,9 @@ const CreateInvoice = () => {
                 <td><input type="number" value={item.tax} onChange={(e) => handleProductChange(index, "tax", e.target.value)} /></td>
                 <td><input type="number" value={item.amount} readOnly /></td>
                 {/* <td>{item.amount}</td> */}
+                <td>
+                  <button onClick={() => handleDeleteProduct(index)}>Delete</button>
+                  </td>
               </tr>
               ))}
             </tbody>

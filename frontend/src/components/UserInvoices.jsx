@@ -8,7 +8,7 @@ const UserInvoices = () => {
 
   const fetchInvoices = async () => {
     try {
-      const res = await axios.get("https://rti-invoicer-production.up.railway.app/api/invoices/user", {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/user`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -29,7 +29,7 @@ const UserInvoices = () => {
     if (!window.confirm("Are you sure you want to delete this invoice?")) return;
 
     try {
-      await axios.delete(`https://rti-invoicer-production.up.railway.app/api/invoices/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -42,7 +42,7 @@ const UserInvoices = () => {
 
   const handleDownload = (id) => {
     const token = localStorage.getItem("token");
-    window.open(`https://rti-invoicer-production.up.railway.app/api/invoices/${id}/pdf?token=${token}`, "_blank");
+    window.open(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/${id}/pdf?token=${token}`, "_blank");
   };
 
   if (loading) return <p>Loading invoices...</p>;

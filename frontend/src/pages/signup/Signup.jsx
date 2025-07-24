@@ -13,7 +13,7 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("https://rti-invoicer-production.up.railway.app/api/auth/signup",form);
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`,form);
             alert("Signup successful! Please login.");
             navigate("/login");
         } catch (err) {

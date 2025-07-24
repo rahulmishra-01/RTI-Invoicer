@@ -13,12 +13,11 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("https://rti-invoicer-production.up.railway.app/api/auth/login",form);
-            localStorage.setItem("token",res.data.token);
-            localStorage.setItem("user",JSON.stringify(res.data.user));
-            navigate("/dashboard");
+            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,form);
+
+            navigate("/otp", {state:{email:form.email}});
         } catch (err) {
-            alert(err.response.data.message || "Login failed");
+            alert(err.response?.data?.message || "Login failed");
         }
     };
 

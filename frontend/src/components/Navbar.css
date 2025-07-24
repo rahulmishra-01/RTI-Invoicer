@@ -4,7 +4,7 @@
 }
 .navbar{
     /* border: 1px solid black; */
-    max-width: 1300px;
+    max-width: 1280px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -74,6 +74,7 @@
 }
 
 /* Mobile Responsive */
+
 
 @media screen and (max-width:786px){
     .navbar-right{
