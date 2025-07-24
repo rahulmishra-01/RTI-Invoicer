@@ -2,6 +2,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import styles from "./OtpPage.module.css";
+import { toast } from "react-toastify";
 
 const OtpPage = () => {
     const {state} = useLocation();
@@ -21,8 +22,10 @@ const OtpPage = () => {
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user",JSON.stringify(res.data.user));
             navigate("/dashboard");
+            toast.success("Login Successfully");
         } catch (error) {
-            alert(error.response?.data?.message || "OTP verification failed");
+            // alert(error.response?.data?.message || "OTP verification failed");
+            toast.error("OTP verification failed");
         }
     }
 
@@ -30,8 +33,10 @@ const OtpPage = () => {
       try {
         const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/resend-otp`,{email: state.email})
         setMessage("OTP resent successfully");
+        toast.success("OTP Sent Successfully");
       } catch (error) {
-        alert(error.response?.data?.message || "Failed to resend OTP");
+        // alert(error.response?.data?.message || "Failed to resend OTP");
+        toast.error("Failed to send OTP");
       }
     };
   return (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../pages/profile/Profile.module.css";
+import { toast } from "react-toastify";
 
 const UserInvoices = () => {
   const [invoices, setInvoices] = useState([]);
@@ -15,7 +16,8 @@ const UserInvoices = () => {
       });
       setInvoices(res.data);
     } catch (err) {
-      alert("Failed to fetch invoices");
+      // alert("Failed to fetch invoices");
+      toast.error("Failed to fetch invoices");
     } finally {
       setLoading(false);
     }
@@ -35,14 +37,15 @@ const UserInvoices = () => {
         },
       });
       setInvoices((prev) => prev.filter((inv) => inv._id !== id));
+      toast.success("Invoice Deleted Successfully");
     } catch (err) {
-      alert("Failed to delete invoice");
+      toast.error("Failed to delete invoice");
     }
   };
 
   const handleDownload = (id) => {
     const token = localStorage.getItem("token");
-    window.open(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/${id}/pdf?token=${token}`, "_blank");
+    window.open(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/${id}/pdf?token=${token}`);
   };
 
   if (loading) return <p>Loading invoices...</p>;

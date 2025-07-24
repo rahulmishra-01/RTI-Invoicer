@@ -4,6 +4,7 @@ import styles from "./Dashboard.module.css"
 import { useNavigate } from "react-router-dom";
 import { pdf } from "@react-pdf/renderer";
 import InvoicePDF from "../../components/InvoicePDF";
+import { toast } from "react-toastify";
 
 
 
@@ -24,7 +25,8 @@ const Dashboard = () => {
         });
         setUserData(res.data);
       } catch (error) {
-        alert("Failed to fetch userData");
+        // alert("Failed to fetch userData");
+        toast.error("Failed to fetch User Data!");
       }
     };
     fetchUserData();
@@ -39,7 +41,8 @@ const Dashboard = () => {
         });
         setInvoices(res.data);
       } catch (error) {
-        alert("Failed to fetch invoices");
+        // alert("Failed to fetch invoices");
+        toast.error("Failed to fetch invoices");
       }
       setLoading(false);
     };
@@ -57,7 +60,8 @@ const Dashboard = () => {
         setInvoiceCount(res.data.length);
         // console.log(res.data.length)
       } catch (error) {
-        console.error("Failed to fetch invoices",error);
+        // console.error("Failed to fetch invoices",error);
+        toast.error("Failed to fetch invoices");
       }
     }
     fetchInvoices();
@@ -105,6 +109,7 @@ const Dashboard = () => {
     a.download = `${invoice.invoiceNumber}.pdf`;
     a.click();
     URL.revokeObjectURL(url);
+    toast.success("PDf Downloaded");
   };
 
 

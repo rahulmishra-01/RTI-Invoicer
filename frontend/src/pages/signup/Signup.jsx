@@ -3,6 +3,7 @@ import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import styles from "./Signup.module.css";
 import RTILogo from "../../assets/images/RTI.png";
+import { toast } from "react-toastify";
 
 const Signup = () => {
     const [form,setForm] = useState({name:"",email:"",password:""})
@@ -14,10 +15,12 @@ const Signup = () => {
         e.preventDefault();
         try {
             await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`,form);
-            alert("Signup successful! Please login.");
+            // alert("Signup successful! Please login.");
             navigate("/login");
+            toast.success("Signup successfully! Please login.")
         } catch (err) {
-            alert(err.response.data.message || "Signup failed");
+            // alert(err.response.data.message || "Signup failed");
+            toast.error("Signup Failed");
         }
     };
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../pages/profile/Profile.module.css"; // Reuse same CSS
+import { toast } from "react-toastify";
 
 const UserInfo = () => {
   // const isValidPAN = (pan) => /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan.toUpperCase());
@@ -86,11 +87,13 @@ const UserInfo = () => {
             country: place.Country || "",
           }));
         } else{
-          alert("Invalid PIN Code");
+          // alert("Invalid PIN Code");
+          toast.success("Invalid PIN Code");
         }
       } catch (error) {
-        console.error(error);
-        alert("Error fetching location info");
+        // console.error(error);
+        // alert("Error fetching location info");
+        toast.error("Failed to fetch location");
       }
     }
 
@@ -108,9 +111,11 @@ const UserInfo = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      alert("Profile updated successfully!");
+      // alert("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
     } catch (err) {
-      alert("Update failed");
+      // alert("Update failed");
+      toast.error("Failed to update profile");
     }
   };
 

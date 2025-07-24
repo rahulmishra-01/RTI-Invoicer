@@ -11,6 +11,8 @@ import "./App.css"
 import InvoicePreview from "./pages/InvoicePreview";
 import HomePage from "./pages/home/HomePage";
 import OtpPage from "./pages/login/OtpPage";
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PrivateRoute = ({children}) => {
   const token = localStorage.getItem("token");
@@ -27,6 +29,7 @@ const App = () => {
 
   return (
     <>
+    <ToastContainer position="top-right" autoClose={3000}/>
     <Navbar/>
     <Routes>
       <Route path="/" element={isLoggedIn ? <Navigate to="dashboard"/>:<Login/>}/>
