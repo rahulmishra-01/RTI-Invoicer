@@ -34,8 +34,12 @@ const Login = () => {
         <input className={styles.inputBox} name="email" id="email" type="email" placeholder="Email" onChange={handleChange} required/>
         <label className={styles.inputLabel} htmlFor="password">Password</label>
         <input className={styles.inputBox} type="password" id="password" name="password" placeholder="Password" onChange={handleChange} required/>
+        <p className={styles.forgotPasswordBtn}>
+          <Link to="/forgot-password">Forgot Password?</Link>
+        </p>
         <button className={styles.button} type="submit">Login</button>
       </form>
+
       <p className={styles.signUp}>Don't have an account? <Link to="/signup">Signup</Link></p>
     </div>
     </div>
