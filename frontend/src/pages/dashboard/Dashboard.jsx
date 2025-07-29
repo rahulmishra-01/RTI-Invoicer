@@ -147,7 +147,7 @@ const Dashboard = () => {
                 <td className={styles.tableData}>{inv.invoiceNumber}</td>
                 <td className={styles.tableData}>{new Date(inv.invoiceDate).toLocaleDateString()}</td>
                 <td className={styles.tableData}>{inv.buyerDetails?.name}</td>
-                <td className={styles.tableData}>₹{Math.floor(inv.totalAmount)}</td>
+                <td className={styles.tableData}>₹{inv.totalAmount.toLocaleString("en-IN")}</td>
                 <td className={styles.tableData}>{inv.status}</td>
                 <td className={[styles.tableData,styles.tablesBtn].join(" ")}>
                   <button className={[styles.downloadBtn,styles.pdfBtn].join(" ")}
