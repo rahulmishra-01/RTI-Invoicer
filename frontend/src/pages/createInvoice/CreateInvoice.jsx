@@ -26,14 +26,6 @@ const CreateInvoice = () => {
     fetchUserData();
   },[]);
 
-  // const generateInvoiceNumber = () => {
-  //   const year = new Date().getFullYear();
-  //   const nextYear = year + 1;
-  //   const random = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
-  //   return `CPT/${year}-${String(nextYear).slice(-2)}/${random}`;
-  // };
-
-
   const generateBuyerOrderNumber = () => {
     return `GEMC-${Math.floor(1000000000000000 + Math.random() * 9000000000000000)}`;
   };
@@ -161,7 +153,7 @@ const CreateInvoice = () => {
           ...prevForm,
           invoiceNumber: res.data.invoiceNumber,
         }));
-        console.log(userId)
+        // console.log(userId)
       } catch (error) {
         console.error("Failed to fetch invoice number:", error)
       }
@@ -172,7 +164,6 @@ const CreateInvoice = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        // const token = localStorage.getItem("token");
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/product/all`,{
           headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}, 
         });
@@ -185,41 +176,10 @@ const CreateInvoice = () => {
   }, [])
 
   useEffect(() => {
-    console.log(productList);
+    // console.log(productList);
   }, [productList]);
 
-  // const handleProductListChange = (index, field, value) => {
-  //   const updated = [...products];
-  //   updated[index][field] = value;
-  //   setProductList(updated);
-
-  //   if(field === "name"){
-  //     const found = productList.find(product => product.name.toLowerCase() === value.toLowerCase());
-  //     if(found){
-  //       updated[index] = {
-  //         ...updated[index],
-  //         price:found.price,
-  //         tax:found.tax,
-  //         discount:found.discount,
-  //         unit:found.unit,
-  //       };
-  //       setProductList(updated);
-  //     }
-  //   }
-  // };
-
-  // const saveProduct = async (product) => {
-  //   try {
-  //     const token = localStorage.getItem("token");
-  //     await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/product/save`, product, {
-  //       headers: {Authorization: `Bearer ${token}`},
-  //     });
-  //   } catch (err) {
-  //     console.error("Product save failed", err)
-  //   }
-  // };
-
-  const handleChange = (section, field, value) => {
+  const handleChange = async (section, field, value) => {
     setForm((prev) => ({
       ...prev,
       [section]: {
@@ -227,6 +187,31 @@ const CreateInvoice = () => {
         [field]: value,
       },
     }));
+
+    if (field === "pincode" && value.length === 6){
+      try {
+        const response = await axios.get(`https://api.postalpincode.in/pincode/${value}`);
+        const data = response.data[0];
+
+        if(data.Status === "Success") {
+          const postOffice = data.PostOffice[0];
+          setForm((prev) => ({
+            ...prev,
+            [section]: {
+              ...prev[section],
+              city: postOffice.District || "",
+              state: postOffice.State || "",
+              district: postOffice.District || "",
+              country: postOffice.Country || "",
+            },
+          }));
+        }else {
+          toast.error("Invalid Pincode");
+        }
+      } catch (error) {
+        toast.error("Failed to fetch pincode details");
+      }
+    }
   };
 
   const handleProductChange = async (index, field, value) => {
@@ -238,7 +223,7 @@ const CreateInvoice = () => {
       const matched = productList.find(
         (p) => p.description.toLowerCase() === value.toLowerCase()
       );
-      console.log(matched)
+      // console.log(matched)
       if(matched){
         updated[index].hsn = matched.hsn;
         updated[index].rate = matched.rate;
@@ -343,10 +328,6 @@ const CreateInvoice = () => {
             <label htmlFor="state">State *</label>
           <input type="text" placeholder="State" id="state" name="state" value={form.sellerDetails.state} onChange={(e) => handleChange("sellerDetails","state",e.target.value)} required/>
           </div>
-          {/* <div className={[styles.sellerInputSection, styles.sellerStateCodeInput].join(" ")}>
-            <label htmlFor="name">StateCode *</label>
-          <input type="text" placeholder="State Code" value={form.sellerDetails.stateCode} onChange={(e) => handleChange("sellerDetails", "stateCode", e.target.value)} required/>
-          </div> */}
           <div className={[styles.sellerInputSection, styles.sellerPanInput].join(" ")}>
             <label htmlFor="pan">PAN *</label>
           <input type="text" placeholder="PAN" id="pan" name="pan" value={form.sellerDetails.pan} onChange={(e) => handleChange("sellerDetails","pan",e.target.value)} required/>
@@ -398,12 +379,6 @@ const CreateInvoice = () => {
          <div className={styles.secondSection}>
           <div className={styles.billToSection}>
             <h2>Bill To</h2>
-        {/* {Object.entries(form.buyerDetails).map(([field, value]) => (
-          <div key={field}>
-            <label>{field}</label>
-            <input value={value} placeholder={field} onChange={(e) => handleChange("buyerDetails", field, e.target.value)} required />
-          </div>
-        ))} */}
 
         <div className={[styles.buyerInputSection, styles.buyerNameInput].join(" ")}>
           <label htmlFor="buyerName">Name *</label>
@@ -422,16 +397,16 @@ const CreateInvoice = () => {
           <input type="text" placeholder="Postal Code" id="buyerPostalCode" name="pincode" value={form.buyerDetails.pincode} onChange={(e) => handleChange("buyerDetails","pincode",e.target.value)} required/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerCityInput].join(" ")}>
-          <label htmlFor="buyerCity">City *</label>
-          <input type="text" placeholder="City" id="buyerCity" name="buyerCity" value={form.buyerDetails.city} onChange={(e) => handleChange("buyerDetails","city",e.target.value)}/>
+          <label htmlFor="buyerCity">City </label>
+          <input type="text" placeholder="City" id="buyerCity" name="buyerCity" value={form.buyerDetails.city} onChange={(e) => handleChange("buyerDetails","city",e.target.value)} readOnly/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerStateInput].join(" ")}>
-          <label htmlFor="buyerState">State *</label>
-          <input type="text" placeholder="State" id="buyerState" name="buyerState" value={form.buyerDetails.state} onChange={(e) => handleChange("buyerDetails","state",e.target.value)}/>
+          <label htmlFor="buyerState">State </label>
+          <input type="text" placeholder="State" id="buyerState" name="buyerState" value={form.buyerDetails.state} onChange={(e) => handleChange("buyerDetails","state",e.target.value)} readOnly/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerCountryInput].join(" ")}>
-          <label htmlFor="buyerCountry">Country *</label>
-          <input type="text" placeholder="Country" id="buyerCountry" name="buyerCountry" value={form.buyerDetails.country} onChange={(e) => handleChange("buyerDetails","country",e.target.value)}/>
+          <label htmlFor="buyerCountry">Country </label>
+          <input type="text" placeholder="Country" id="buyerCountry" name="buyerCountry" value={form.buyerDetails.country} onChange={(e) => handleChange("buyerDetails","country",e.target.value)} readOnly/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerPhoneInput].join(" ")}>
           <label htmlFor="buyerPhone">Phone *</label>
@@ -451,12 +426,6 @@ const CreateInvoice = () => {
 
         <div className={styles.shipToSection}>
           <h2>Ship To</h2>
-        {/* {Object.entries(form.shipTo).map(([field, value]) => (
-          <div key={field}>
-            <label>{field}</label>
-            <input value={value} placeholder={field} onChange={(e) => handleChange("shipTo", field, e.target.value)} required />
-          </div>
-        ))} */}
 
          <div className={[styles.shipToInputSection, styles.shipToInput].join(" ")}>
           <label htmlFor="shipToName">Name *</label>
@@ -472,19 +441,19 @@ const CreateInvoice = () => {
         </div>
         <div className={[styles.shipToInputSection, styles.shipToPostalCodeInput].join(" ")}>
           <label htmlFor="shipToPostalCode">Area Code *</label>
-          <input type="text" placeholder="Postal Code" value={form.shipTo.pincode} onChange={(e) => handleChange("shipTo","pincode",e.target.value)} required/>
+          <input type="text" placeholder="Postal Code" name="pincode" value={form.shipTo.pincode} onChange={(e) => handleChange("shipTo","pincode",e.target.value)} required/>
         </div>
         <div className={[styles.shipToInputSection, styles.shipToCityInput].join(" ")}>
-          <label htmlFor="shipToCity">City *</label>
-          <input type="text" placeholder="City" value={form.shipTo.city} onChange={(e) => handleChange("shipTo","city",e.target.value)}/>
+          <label htmlFor="shipToCity">City </label>
+          <input type="text" placeholder="City" value={form.shipTo.city} onChange={(e) => handleChange("shipTo","city",e.target.value)} readOnly/>
         </div>
         <div className={[styles.shipToInputSection, styles.shipToStateInput].join(" ")}>
-          <label htmlFor="shipToState">State *</label>
-          <input type="text" placeholder="State" value={form.shipTo.state} onChange={(e) => handleChange("shipTo","state",e.target.value)}/>
+          <label htmlFor="shipToState">State </label>
+          <input type="text" placeholder="State" value={form.shipTo.state} onChange={(e) => handleChange("shipTo","state",e.target.value)} readOnly/>
         </div>
         <div className={[styles.shipToInputSection, styles.shipToCountryInput].join(" ")}>
-          <label htmlFor="shipToCountry">Country *</label>
-          <input type="text" placeholder="Country" value={form.shipTo.country} onChange={(e) => handleChange("shipTo","country",e.target.value)}/>
+          <label htmlFor="shipToCountry">Country </label>
+          <input type="text" placeholder="Country" value={form.shipTo.country} onChange={(e) => handleChange("shipTo","country",e.target.value)} readOnly/>
         </div>
         <div className={[styles.shipToInputSection, styles.shipToPhoneInput].join(" ")}>
           <label htmlFor="shipToPhone">Phone *</label>
@@ -546,29 +515,6 @@ const CreateInvoice = () => {
               ))}
             </tbody>
           </table>
-        {/* <div className="product-table">
-          <div className={styles.productHeaders}>
-            <div>Description</div>
-            <div>HSN</div>
-            <div>Qty</div>
-            <div>Rate</div>
-            <div>Discount %</div>
-            <div>Tax %</div>
-            <div>Amount</div>
-          </div>
-
-          {form.products.map((item, index) => (
-            <div className="product-row" key={index}>
-              <input value={item.description} onChange={(e) => handleProductChange(index, "description", e.target.value)} />
-              <input value={item.hsn} onChange={(e) => handleProductChange(index, "hsn", e.target.value)} />
-              <input type="number" value={item.quantity} onChange={(e) => handleProductChange(index, "quantity", e.target.value)} />
-              <input type="number" value={item.rate} onChange={(e) => handleProductChange(index, "rate", e.target.value)} />
-              <input type="number" value={item.discount} onChange={(e) => handleProductChange(index, "discount", e.target.value)} />
-              <input type="number" value={item.tax} onChange={(e) => handleProductChange(index, "tax", e.target.value)} />
-              <input type="number" value={item.amount} readOnly />
-            </div>
-          ))}
-        </div> */}
         </div>
         
 

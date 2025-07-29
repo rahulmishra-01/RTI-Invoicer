@@ -72,10 +72,10 @@ const UserInvoices = () => {
                 <td>{inv.invoiceNumber}</td>
                 <td>{new Date(inv.invoiceDate).toLocaleDateString()}</td>
                 <td>{inv.buyerDetails?.name}</td>
-                <td>₹{Math.floor(inv.totalAmount)}</td>
+                <td>₹{inv.totalAmount.toLocaleString("en-IN")}</td>
                 <td>{inv.status}</td>
                 <td className={styles.tablesBtn}>
-                  <button  onClick={() => handleDownload(inv._id)}>Download</button>
+                  {/* <button  onClick={() => handleDownload(inv._id)}>Download</button> */}
                   <button  onClick={() => handleDelete(inv._id)}>Delete</button>
                 </td>
               </tr>
