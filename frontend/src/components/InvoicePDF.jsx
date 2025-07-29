@@ -9,14 +9,15 @@ import {
 } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
-  page: { padding: 30, fontSize: 10, lineHeight: 1.4 },
+  page: { padding: 30, fontSize: 10, lineHeight: 1.4, position: "relative" },
   section: { marginTop: 30 },
   row: { flexDirection: "row", justifyContent: "space-between" },
-  bold: { fontWeight: "bold" },
+  bold: { fontWeight: "bold"},
   heading: { fontSize: 14, marginBottom: 5 },
   tableHeader: { backgroundColor: "#eee", padding: 4, fontWeight: "bold" },
   tableCell: { padding: 4, borderBottom: "1px solid #ddd" },
-  footerText: { textAlign: "center", marginTop: 30, fontSize: 9 },
+  footerText: { textAlign: "center", marginTop: 30, fontSize: 9, position: "absolute", bottom: 30, left: 0, right: 0 },
+  authorisedSignatory: { textAlign: "right", marginTop: 80, fontSize: 10 },
 });
 
 const InvoicePDF = ({ invoice }) => {
@@ -83,7 +84,7 @@ const InvoicePDF = ({ invoice }) => {
           </View>
           {products.map((item, i) => (
             <View style={styles.row} key={i}>
-              <Text style={{ width: "5%" }}>{i + 1}</Text>
+              <Text style={{ width: "5%",paddingLeft:5 }}>{i + 1}</Text>
               <Text style={{ width: "30%" }}>{item.description}</Text>
               <Text style={{ width: "10%" }}>{item.hsn}</Text>
               <Text style={{ width: "10%" }}>{item.quantity}</Text>
@@ -97,9 +98,9 @@ const InvoicePDF = ({ invoice }) => {
 
         {/* Totals Section */}
         <View style={[styles.section, { alignItems: "flex-end" }]}>
-          <Text>Subtotal: ₹{subtotal.toFixed(2)}</Text>
-          <Text>Tax ({taxRate}%): ₹{taxAmount.toFixed(2)}</Text>
-          <Text>Grand Total: ₹{total.toFixed(2)}</Text>
+          <Text>Subtotal: {subtotal.toFixed(2)}</Text>
+          <Text>Tax ({taxRate}%): {taxAmount.toFixed(2)}</Text>
+          <Text>Grand Total: {total.toFixed(2)}</Text>
         </View>
 
         {/* Bank Details + Signatory */}
@@ -113,7 +114,7 @@ const InvoicePDF = ({ invoice }) => {
             <Text>PAN: {s.pan}</Text>
           </View>
           <View style={{ width: "35%", textAlign: "right" }}>
-            <Text style={styles.bold}>Authorised Signatory</Text>
+            <Text style={[styles.bold, styles.authorisedSignatory]}>Authorised Signatory</Text>
           </View>
         </View>
 
