@@ -10,7 +10,7 @@ import {
 
 const styles = StyleSheet.create({
   page: { padding: 30, fontSize: 10, lineHeight: 1.4 },
-  section: { marginBottom: 12 },
+  section: { marginTop: 30 },
   row: { flexDirection: "row", justifyContent: "space-between" },
   bold: { fontWeight: "bold" },
   heading: { fontSize: 14, marginBottom: 5 },
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 const InvoicePDF = ({ invoice }) => {
   const s = invoice.sellerDetails || {};
   const b = invoice.buyerDetails || {};
-  const sh = invoice.shipTO || {};
+  const sh = invoice.shipTo || {};
   const products = invoice.products || [];
   const total = invoice.totalAmount || 0;
 
@@ -38,8 +38,8 @@ const InvoicePDF = ({ invoice }) => {
             <Text style={styles.bold}>{s.name}</Text>
             <Text>{s.address}</Text>
             <Text>{s.state}, {s.pincode}</Text>
-            <Text>GSTIN: {s.gstin}</Text>
-            <Text>PAN: {s.pan}</Text>
+            <Text>{s.gstin}</Text>
+            <Text>{s.pan}</Text>
           </View>
           <View>
             <Text style={[styles.heading, styles.bold]}>TAX INVOICE</Text>
@@ -54,12 +54,18 @@ const InvoicePDF = ({ invoice }) => {
           <View style={{ width: "48%" }}>
             <Text style={styles.bold}>Bill To:</Text>
             <Text>{b.name}</Text>
-            <Text>{b.address}</Text>
+            <Text>{b.addressLine1}</Text>
+            <Text>{b.state}, {b.pincode}</Text>
+            <Text>{b.phone}</Text>
+            <Text>{b.email}</Text>
           </View>
           <View style={{ width: "48%" }}>
             <Text style={styles.bold}>Ship To:</Text>
             <Text>{sh.name}</Text>
-            <Text>{sh.address}</Text>
+            <Text>{sh.addressLine1}</Text>
+            <Text>{sh.state}, {sh.pincode}</Text>
+            <Text>{sh.phone}</Text>
+            <Text>{sh.email}</Text>
           </View>
         </View>
 

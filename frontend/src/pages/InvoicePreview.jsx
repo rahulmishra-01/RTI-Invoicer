@@ -29,6 +29,7 @@ const InvoicePreview = () => {
         <div>
             <PDFViewer style={{width:"100vw",height:"100vh"}}>
                 <InvoicePDF invoice={invoice}/>
+                {console.log(invoice)}
             </PDFViewer>
             {/* <PDFDownloadLink
                 document={<InvoicePDF invoice={invoice}/>}

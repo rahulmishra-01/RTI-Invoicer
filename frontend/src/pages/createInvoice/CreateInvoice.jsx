@@ -6,8 +6,11 @@ import { toast } from "react-toastify";
 
 const CreateInvoice = () => {
   const [invoiceCount, setInvoiceCount] = useState(0);
-   const [userData,setUserData] = useState([]);
+  const [userData,setUserData] = useState([]);
+  const [productList, setProductList] = useState([]);
   const navigate = useNavigate();
+
+  const userId = JSON.parse(localStorage.getItem("user"))?.id;
 
    useEffect(() => {
     const fetchUserData = async () => {
@@ -58,7 +61,7 @@ const CreateInvoice = () => {
       // gstin: "",
       addressLine1: "",
       addressLine2: "",
-      postalCode: "",
+      pincode: "",
       city: "",
       state: "",
       country: "",
@@ -70,7 +73,7 @@ const CreateInvoice = () => {
       // gstin: "",
       addressLine1: "",
       addressLine2: "",
-      postalCode: "",
+      pincode: "",
       city: "",
       state: "",
       country: "",
@@ -124,7 +127,6 @@ const CreateInvoice = () => {
           headers:{Authorization:`Bearer ${localStorage.getItem("token")}`},
         });
         setInvoiceCount(res.data.length)
-        console.log(res.data)
       } catch (error) {
         console.error("Failed to fetch invoices",error);
       }
@@ -159,14 +161,63 @@ const CreateInvoice = () => {
           ...prevForm,
           invoiceNumber: res.data.invoiceNumber,
         }));
-
-        {console.log(res)}
+        console.log(userId)
       } catch (error) {
         console.error("Failed to fetch invoice number:", error)
       }
     };
     InvoiceNumber();
   },[]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        // const token = localStorage.getItem("token");
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/product/all`,{
+          headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}, 
+        });
+        setProductList(res.data);
+      } catch (err) {
+        console.error("Error fetching products", err);
+      }
+    };
+    fetchProduct();
+  }, [])
+
+  useEffect(() => {
+    console.log(productList);
+  }, [productList]);
+
+  // const handleProductListChange = (index, field, value) => {
+  //   const updated = [...products];
+  //   updated[index][field] = value;
+  //   setProductList(updated);
+
+  //   if(field === "name"){
+  //     const found = productList.find(product => product.name.toLowerCase() === value.toLowerCase());
+  //     if(found){
+  //       updated[index] = {
+  //         ...updated[index],
+  //         price:found.price,
+  //         tax:found.tax,
+  //         discount:found.discount,
+  //         unit:found.unit,
+  //       };
+  //       setProductList(updated);
+  //     }
+  //   }
+  // };
+
+  // const saveProduct = async (product) => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/product/save`, product, {
+  //       headers: {Authorization: `Bearer ${token}`},
+  //     });
+  //   } catch (err) {
+  //     console.error("Product save failed", err)
+  //   }
+  // };
 
   const handleChange = (section, field, value) => {
     setForm((prev) => ({
@@ -178,10 +229,23 @@ const CreateInvoice = () => {
     }));
   };
 
-  const handleProductChange = (index, field, value) => {
+  const handleProductChange = async (index, field, value) => {
     const updated = [...form.products];
     const numericFields = ["quantity", "rate", "discount", "tax"];
     updated[index][field] = numericFields.includes(field) ? Number(value) : value;
+
+    if (field === "description"){
+      const matched = productList.find(
+        (p) => p.description.toLowerCase() === value.toLowerCase()
+      );
+      console.log(matched)
+      if(matched){
+        updated[index].hsn = matched.hsn;
+        updated[index].rate = matched.rate;
+        updated[index].discount = matched.discount;
+        updated[index].tax = matched.tax;
+      }
+    }
 
     const { quantity, rate, discount, tax } = updated[index];
     let amount = quantity * rate;
@@ -234,6 +298,14 @@ const CreateInvoice = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
+      const newProducts = form.products.filter((product) => !productList.some((saved) => saved.description.toLowerCase() === product.description.toLowerCase()));
+
+      if(newProducts.length > 0) {
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/product/bulk-save`,{
+          userId: userId,
+          products:newProducts,
+        });
+      }
       navigate("/dashboard");
       toast.success("Invoice created successfully!");
     } catch (error) {
@@ -250,56 +322,50 @@ const CreateInvoice = () => {
          <div className={styles.firstSection}>
           <div className={styles.sellerSection}>
           <h2>Seller Details</h2>
-        {/* {Object.entries(form.sellerDetails).map(([field, value]) => (
-          <div key={field}>
-            <label>{field}:</label> 
-            <input value={value} placeholder={field} onChange={(e) => handleChange("sellerDetails", field, e.target.value)} required />
-          </div>
-        ))} */}
         <div>
           <div className={[styles.sellerInputSection, styles.sellerNameInput].join(" ")}>
             <label htmlFor="name">Name *</label>
-          <input type="text" placeholder="Name" value={form.sellerDetails.name} onChange={(e) => handleChange("sellerDetails","name",e.target.value)} required/>
+          <input type="text" placeholder="Name" id="name" name="name" value={form.sellerDetails.name} onChange={(e) => handleChange("sellerDetails","name",e.target.value)} required/>
           </div>
           <div className={[styles.sellerInputSection, styles.sellerAddressInput].join(" ")}>
-            <label htmlFor="name">Address *</label>
-          <input type="text" placeholder="Address" value={form.sellerDetails.address} onChange={(e) => handleChange("sellerDetails","address",e.target.value)} required/>
+            <label htmlFor="address">Address *</label>
+          <input type="text" placeholder="Address" id="address" name="address" value={form.sellerDetails.address} onChange={(e) => handleChange("sellerDetails","address",e.target.value)} required/>
           </div>
           <div className={[styles.sellerInputSection, styles.sellerPincodeInput].join(" ")}>
-            <label htmlFor="name">Pincode *</label>
-          <input type="text" placeholder="Pincode" value={form.sellerDetails.pincode} onChange={(e) => handleChange("sellerDetails","pincode",e.target.value)} required/>
+            <label htmlFor="pincode">Pincode *</label>
+          <input type="text" placeholder="Pincode" id="pincode" name="pincode" value={form.sellerDetails.pincode} onChange={(e) => handleChange("sellerDetails","pincode",e.target.value)} required/>
           </div>
           <div className={[styles.sellerInputSection, styles.sellerGstinInput].join(" ")}>
-            <label htmlFor="name">GSTIN *</label>
-          <input type="text" placeholder="GSTIN" value={form.sellerDetails.gstin} onChange={(e) => handleChange("sellerDetails","gstin",e.target.value)} required/>
+            <label htmlFor="gstin">GSTIN *</label>
+          <input type="text" placeholder="GSTIN" id="gstin" name="gstin" value={form.sellerDetails.gstin} onChange={(e) => handleChange("sellerDetails","gstin",e.target.value)} required/>
           </div>
           <div className={[styles.sellerInputSection, styles.sellerStateInput].join(" ")}>
-            <label htmlFor="name">State *</label>
-          <input type="text" placeholder="State" value={form.sellerDetails.state} onChange={(e) => handleChange("sellerDetails","state",e.target.value)} required/>
+            <label htmlFor="state">State *</label>
+          <input type="text" placeholder="State" id="state" name="state" value={form.sellerDetails.state} onChange={(e) => handleChange("sellerDetails","state",e.target.value)} required/>
           </div>
           {/* <div className={[styles.sellerInputSection, styles.sellerStateCodeInput].join(" ")}>
             <label htmlFor="name">StateCode *</label>
           <input type="text" placeholder="State Code" value={form.sellerDetails.stateCode} onChange={(e) => handleChange("sellerDetails", "stateCode", e.target.value)} required/>
           </div> */}
           <div className={[styles.sellerInputSection, styles.sellerPanInput].join(" ")}>
-            <label htmlFor="name">PAN *</label>
-          <input type="text" placeholder="PAN" value={form.sellerDetails.pan} onChange={(e) => handleChange("sellerDetails","pan",e.target.value)} required/>
+            <label htmlFor="pan">PAN *</label>
+          <input type="text" placeholder="PAN" id="pan" name="pan" value={form.sellerDetails.pan} onChange={(e) => handleChange("sellerDetails","pan",e.target.value)} required/>
           </div>
           <div className={[styles.sellerInputSection, styles.sellerBankNameInput].join(" ")}>
-            <label htmlFor="name">Bank Name *</label>
-          <input type="text" placeholder="Bank Name" value={form.sellerDetails.bankName} onChange={(e) => handleChange("sellerDetails","bankName",e.target.value)} required/>
+            <label htmlFor="bankName">Bank Name *</label>
+          <input type="text" placeholder="Bank Name" id="bankName" name="bankName" value={form.sellerDetails.bankName} onChange={(e) => handleChange("sellerDetails","bankName",e.target.value)} required/>
           </div>
           <div className={[styles.sellerInputSection, styles.sellerAccountNumberInput].join(" ")}>
-            <label htmlFor="name">Account Number *</label>
-          <input type="text" placeholder="Account Number" value={form.sellerDetails.accountNumber} onChange={(e) => handleChange("sellerDetails","accountNumber",e.target.value)} required/>
+            <label htmlFor="accountNumber">Account Number *</label>
+          <input type="text" placeholder="Account Number" id="accountNumber" name="accountNumber" value={form.sellerDetails.accountNumber} onChange={(e) => handleChange("sellerDetails","accountNumber",e.target.value)} required/>
           </div>
           <div className={[styles.sellerInputSection, styles.sellerBranchInput].join(" ")}>
-            <label htmlFor="name">Branch *</label>
-          <input type="text" placeholder="Branch" value={form.sellerDetails.branch} onChange={(e) => handleChange("sellerDetails","branch",e.target.value)} required/>
+            <label htmlFor="branch">Branch *</label>
+          <input type="text" placeholder="Branch" id="branch" name="branch" value={form.sellerDetails.branch} onChange={(e) => handleChange("sellerDetails","branch",e.target.value)} required/>
           </div>
           <div className={[styles.sellerInputSection, styles.sellerIfscInput].join(" ")}>
-            <label htmlFor="name">IFSC *</label>
-          <input type="text" placeholder="IFSC" value={form.sellerDetails.ifsc} onChange={(e) => handleChange("sellerDetails","ifsc",e.target.value)} required/>
+            <label htmlFor="ifsc">IFSC *</label>
+          <input type="text" placeholder="IFSC" id="ifsc" name="ifsc" value={form.sellerDetails.ifsc} onChange={(e) => handleChange("sellerDetails","ifsc",e.target.value)} required/>
           </div>
         </div>
         </div>
@@ -307,22 +373,22 @@ const CreateInvoice = () => {
            <div className={styles.invoiceSection}>
             <div className={styles.invoiceValuesSection}>
               <div>
-                <label>Invoice No:</label>
-              <input value={form.invoiceNumber} readOnly />
+                <label htmlFor="invoiceNo">Invoice No:</label>
+              <input value={form.invoiceNumber} id="invoiceNo" name="invoiceNo" readOnly />
               </div>
               <div>
-                <label>Invoice Date:</label>
-          <input type="date" value={form.invoiceDate} onChange={(e) => setForm({ ...form, invoiceDate: e.target.value })} required />
+                <label htmlFor="invoiceDate">Invoice Date:</label>
+          <input type="date" id="invoiceDate" name="invoiceDate" value={form.invoiceDate} onChange={(e) => setForm({ ...form, invoiceDate: e.target.value })} required />
               </div>
             </div>
           <div className={styles.buyerValueSection}>
             <div>
-              <label>Buyer's Order No:</label>
-          <input value={form.buyerOrderNumber} readOnly />
+              <label htmlFor="buyerOrderNo">Buyer's Order No:</label>
+          <input value={form.buyerOrderNumber} id="buyerOrderNo" name="buyerOrderNo" readOnly />
             </div>
           <div>
-            <label>Buyer's Order Date:</label>
-          <input type="date" value={form.buyerOrderDate} onChange={(e) => setForm({ ...form, buyerOrderDate: e.target.value })} required />
+            <label htmlFor="buyerOrderDate">Buyer's Order Date:</label>
+          <input type="date" id="buyerOrderDate" name="buyerOrderDate" value={form.buyerOrderDate} onChange={(e) => setForm({ ...form, buyerOrderDate: e.target.value })} required />
           </div>
           </div>
            </div>
@@ -341,39 +407,39 @@ const CreateInvoice = () => {
 
         <div className={[styles.buyerInputSection, styles.buyerNameInput].join(" ")}>
           <label htmlFor="buyerName">Name *</label>
-          <input type="text" placeholder="Name" value={form.buyerDetails.name} onChange={(e) => handleChange("buyerDetails","name",e.target.value)} required/>
+          <input type="text" placeholder="Name" id="buyerName" name="buyerName" value={form.buyerDetails.name} onChange={(e) => handleChange("buyerDetails","name",e.target.value)} required/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerAddressLine1Input].join(" ")}>
           <label htmlFor="buyerAddressLine1">Address*</label>
-          <input type="text" placeholder="Address Line 1" value={form.buyerDetails.addressLine1} onChange={(e) => handleChange("buyerDetails","addressLine1",e.target.value)} required/>
+          <input type="text" placeholder="Address Line 1" id="buyerAddressLine1" name="buyerAddressLine1" value={form.buyerDetails.addressLine1} onChange={(e) => handleChange("buyerDetails","addressLine1",e.target.value)} required/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerAddressLine2Input].join(" ")}>
           <label htmlFor="buyerAddressLine2">Address</label>
-          <input type="text" placeholder="Address Line 2" value={form.buyerDetails.addressLine2} onChange={(e) => handleChange("buyerDetails","addressLine2",e.target.value)}/>
+          <input type="text" placeholder="Address Line 2" id="buyerAddressLine2" name="buyerAddressLine2" value={form.buyerDetails.addressLine2} onChange={(e) => handleChange("buyerDetails","addressLine2",e.target.value)}/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerPostalCodeInput].join(" ")}>
           <label htmlFor="buyerPostalCode">Area Code *</label>
-          <input type="text" placeholder="Postal Code" value={form.buyerDetails.postalCode} onChange={(e) => handleChange("buyerDetails","postalCode",e.target.value)} required/>
+          <input type="text" placeholder="Postal Code" id="buyerPostalCode" name="pincode" value={form.buyerDetails.pincode} onChange={(e) => handleChange("buyerDetails","pincode",e.target.value)} required/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerCityInput].join(" ")}>
           <label htmlFor="buyerCity">City *</label>
-          <input type="text" placeholder="City" value={form.buyerDetails.city} onChange={(e) => handleChange("buyerDetails","city",e.target.value)}/>
+          <input type="text" placeholder="City" id="buyerCity" name="buyerCity" value={form.buyerDetails.city} onChange={(e) => handleChange("buyerDetails","city",e.target.value)}/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerStateInput].join(" ")}>
           <label htmlFor="buyerState">State *</label>
-          <input type="text" placeholder="State" value={form.buyerDetails.state} onChange={(e) => handleChange("buyerDetails","state",e.target.value)}/>
+          <input type="text" placeholder="State" id="buyerState" name="buyerState" value={form.buyerDetails.state} onChange={(e) => handleChange("buyerDetails","state",e.target.value)}/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerCountryInput].join(" ")}>
           <label htmlFor="buyerCountry">Country *</label>
-          <input type="text" placeholder="Country" value={form.buyerDetails.country} onChange={(e) => handleChange("buyerDetails","country",e.target.value)}/>
+          <input type="text" placeholder="Country" id="buyerCountry" name="buyerCountry" value={form.buyerDetails.country} onChange={(e) => handleChange("buyerDetails","country",e.target.value)}/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerPhoneInput].join(" ")}>
           <label htmlFor="buyerPhone">Phone *</label>
-          <input type="text" placeholder="Phone" value={form.buyerDetails.phone} onChange={(e) => handleChange("buyerDetails","phone",e.target.value)}/>
+          <input type="text" placeholder="Phone" id="buyerPhone" name="buyerPhone" value={form.buyerDetails.phone} onChange={(e) => handleChange("buyerDetails","phone",e.target.value)}/>
         </div>
         <div className={[styles.buyerInputSection, styles.buyerEmailInput].join(" ")}>
           <label htmlFor="buyerEmail">Email *</label>
-          <input type="email" placeholder="Email" value={form.buyerDetails.email} onChange={(e) => handleChange("buyerDetails","email",e.target.value)}/>
+          <input type="email" placeholder="Email" id="buyerEmail" name="buyerEmail" value={form.buyerDetails.email} onChange={(e) => handleChange("buyerDetails","email",e.target.value)}/>
         </div>
           </div>
 
@@ -406,7 +472,7 @@ const CreateInvoice = () => {
         </div>
         <div className={[styles.shipToInputSection, styles.shipToPostalCodeInput].join(" ")}>
           <label htmlFor="shipToPostalCode">Area Code *</label>
-          <input type="text" placeholder="Postal Code" value={form.shipTo.postalCode} onChange={(e) => handleChange("shipTo","postalCode",e.target.value)} required/>
+          <input type="text" placeholder="Postal Code" value={form.shipTo.pincode} onChange={(e) => handleChange("shipTo","pincode",e.target.value)} required/>
         </div>
         <div className={[styles.shipToInputSection, styles.shipToCityInput].join(" ")}>
           <label htmlFor="shipToCity">City *</label>

@@ -37,6 +37,10 @@ app.use("/api/users",userRoutes)
 const paymentRoutes = require("./routes/paymentRoutes");
 app.use("/api/payment", paymentRoutes);
 
+//Product Routes
+const productRoutes = require("./routes/product");
+app.use("/api/product", productRoutes);
+
 //MongoDB connection
 const Port = process.env.PORT;
 mongoose.connect(process.env.MONGO_URI)

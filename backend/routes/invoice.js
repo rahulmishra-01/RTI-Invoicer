@@ -49,7 +49,7 @@ router.get("/new-invoice-number", async (req,res) => {
         const invoiceNumber = await generateInvoiceNumber();
         res.json({invoiceNumber});
     } catch (error) {
-        res.status(500).json({error:"Failed to generate invoice number"});
+        res.status(500).json({error:"Failed to generate invoice number"});   
     }
 })
 
