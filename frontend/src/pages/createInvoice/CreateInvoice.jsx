@@ -251,7 +251,7 @@ const CreateInvoice = () => {
     let amount = quantity * rate;
     let discountAmount = amount * (discount / 100);
     let taxedAmount = (amount - discountAmount) * (tax / 100);
-    updated[index].amount = Math.round((amount - discountAmount + taxedAmount) * 100) / 100;
+    updated[index].amount = Math.floor((amount - discountAmount + taxedAmount) * 100) / 100;
 
     const total = updated.reduce((acc, item) => acc + item.amount, 0);
     setForm({ ...form, products: updated, totalAmount: total });
@@ -572,7 +572,7 @@ const CreateInvoice = () => {
         </div>
         
 
-        <h3 className={styles.totalAmount}><span className={styles.totalAmountText}>Total:</span> <span className={styles.totalAmountValue}>₹{form.totalAmount}</span></h3>
+        <h3 className={styles.totalAmount}><span className={styles.totalAmountText}>Total:</span> <span className={styles.totalAmountValue}>₹{form.totalAmount.toLocaleString("en-IN")}</span></h3>
       </form>
     </div>
     </div>

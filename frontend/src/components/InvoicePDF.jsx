@@ -8,11 +8,26 @@ import {
   Font,
 } from "@react-pdf/renderer";
 
+import Roboto from "../fonts/Roboto-Regular.ttf";
+import RobotoBold from "../fonts/Roboto-Bold.ttf";
+
+Font.register({
+  family: "Roboto",
+  src:Roboto,
+  fontWeight: "normal",
+});
+
+Font.register({
+  family: "Roboto",
+  src: RobotoBold,
+  fontWeight: "bold",
+});
+
 const styles = StyleSheet.create({
-  page: { padding: 30, fontSize: 10, lineHeight: 1.4, position: "relative" },
+  page: { padding: 30, fontSize: 10, lineHeight: 1.4, position: "relative", fontFamily: "Roboto" },
   section: { marginTop: 30 },
   row: { flexDirection: "row", justifyContent: "space-between" },
-  bold: { fontWeight: "bold"},
+  bold: { fontFamily: "Roboto", fontWeight: "bold" },
   heading: { fontSize: 14, marginBottom: 5 },
   tableHeader: { backgroundColor: "#eee", padding: 4, fontWeight: "bold" },
   tableCell: { padding: 4, borderBottom: "1px solid #ddd" },
@@ -98,9 +113,15 @@ const InvoicePDF = ({ invoice }) => {
 
         {/* Totals Section */}
         <View style={[styles.section, { alignItems: "flex-end" }]}>
-          <Text>Subtotal: {subtotal.toFixed(2)}</Text>
-          <Text>Tax ({taxRate}%): {taxAmount.toFixed(2)}</Text>
-          <Text>Grand Total: {total.toFixed(2)}</Text>
+          <Text>
+  Subtotal: ₹{subtotal.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+</Text>
+<Text>
+  Tax ({taxRate}%): ₹{taxAmount.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+</Text>
+<Text>
+  Grand Total: ₹{total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+</Text>
         </View>
 
         {/* Bank Details + Signatory */}
