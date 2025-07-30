@@ -289,7 +289,10 @@ const CreateInvoice = () => {
         await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/product/bulk-save`,{
           userId: userId,
           products:newProducts,
-        });
+        },
+      {
+        headers: {Authorization: `Bearer ${localStorage.getItem("token")}`},
+      });
       }
       navigate("/dashboard");
       toast.success("Invoice created successfully!");
