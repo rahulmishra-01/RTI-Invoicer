@@ -1,22 +1,28 @@
 
 .dashboard{
-    /* border: 1px solid black; */
     max-width: 1300px;
     width: 100vw;
     margin: 0 auto;
-    padding: 0.8rem 1rem;
+    padding: 1rem;
+    background-color: rgba(213, 220, 224, 0.349);
 }
 .dashboardUpperNav{
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0.9rem 1rem;
 }
 .dashboard h2{
-    text-align: left;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 2.2rem;
+    color: rgb(40, 82, 117);
 }
 .dashboard h3{
-    padding: 0 10px;
-    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    color: rgb(40, 82, 117);
 }
 
 .stats{
@@ -24,66 +30,134 @@
     grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
     gap: 1rem;
     margin-bottom: 1rem;
-    font-weight: bold;
-    background-color: rgba(213, 220, 224, 0.349);
     padding: 1rem;
-    margin-bottom: 1rem;
-    text-align: center;
+    border-radius: 0.8rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.336);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgb(40, 82, 117);
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 }
 
 .statsBox{
-    position: relative;
-    padding: 3rem 1.2rem;
-    font-size: 1.4rem;
-    border-radius: 0.8rem;
-    background-color: white;
-}
-.statsBoxValues{
-    /* border: 1px solid black; */
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.336);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.statsBoxValues{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 2rem;
+    font-weight: 600;
+    color: rgb(40, 82, 117);
+    margin-bottom: 0.5rem;
 }
 
 .statsName{
-    font-size: 1rem;
-    padding: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: rgb(85, 84, 84);
+    text-transform: uppercase;
 }
 .statsValue{
-    font-size:2.1rem;
-    margin-left: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgb(40, 82, 117);
 }
 .invoiceTableHeader{
-    font-size: 1.8rem;
-    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1rem;
+    background-color: aliceblue;
+    border-radius: 4px;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.336);
 }
 .table{
-    border: 1px solid black;
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 20px;
 }
 .tableHead{
-    border: 1px solid black;
+    border: 1px solid rgb(145, 142, 142);
+    text-align: left;
+    padding: 6px ;
+    color: rgb(85, 84, 84);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
     background-color: aliceblue;
+    border-radius: 4px;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.336);
 }
 .tableRow{
-    border: 1px solid black;
+    border: 1px solid rgb(145, 142, 142);
+    text-align: left;
+    padding: 6px ;
+    color: rgb(85, 84, 84);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.336);
 }
 .tableHeading{
     border: 1px solid rgb(145, 142, 142);
     text-align: left;
     padding: 6px ;
     color: rgb(85, 84, 84);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    background-color: aliceblue;
+    border-radius: 4px;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.336);
 }
 .tableData{
     border: 1px solid rgb(145, 142, 142);
     text-align: left;
     padding: 6px ;
+    color: rgb(85, 84, 84);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.336);
 }
 .tablesBtn{
     display: flex;
-    align-items: center;
-    gap: 12px;
+    gap: 10px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
 }
 .pdfBtn{
     padding: 6px 12px;
@@ -93,12 +167,17 @@
     outline: none;
     background-color: rgb(40, 82, 117);
     color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
 }
-
 .stats div .stats-
 .dashboard-upper-nav{
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0.9rem 1rem;
+    background-color: aliceblue;
+    border-radius: 4px;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.336);
 }

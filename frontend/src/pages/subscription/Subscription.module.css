@@ -1,112 +1,70 @@
 .subscriptionPageContainer{
-  /* border: 1px solid black; */
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  /* height: 100vh; */
+  align-items: center;
+  justify-content: center;
+  min-height: 90vh;
+  background-color: #f8f9fa; /* Light background for better contrast */
 }
 .subscriptionPageContainer h1{
-  text-align: center;
-  padding: 25px 0;
+  margin-bottom: 20px;
+  color: #343a40; /* Darker text for better readability */
+  font-size: 2rem;
+  font-weight: bold;
 }
 .plansContainer{
-  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px; /* Limit the width for better layout on larger screens */
+  padding: 20px;
+}
+.plans{
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 20px 0;
-  /* height: 100vh; */
-}
-.plans{
-  /* border: 1px solid black; */
-  display: flex;
-  /* height: 100vh; */
-  gap: 50px;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: white; /* White background for contrast */
 }
 .planCard{
-  /* border: 1px solid #ffc107; */
-  padding: 2.5rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border: 2px solid #ccc; /* Light border for separation */
+  padding: 20px;
   border-radius: 10px;
-  /* height: fit-content; */
+  width: 280px; /* Fixed width for each plan card */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
 }
 .free{
-  border: 1px solid #28a745;
+  border: 1px solid #28a745; /* Green border for free plan */
+  background-color: #d4edda; /* Light green background for free plan */
 }
 .premium{
-  border: 1px solid #ffc107;
+  border: 1px solid #007bff; /* Blue border for premium plan */
+  background-color: #cce5ff; /* Light blue background for premium plan */
 }
 .planCard h2{
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
+  color: #495057; /* Darker text for better readability */
 }
 .planCard button{
   margin-top: 1rem;
   padding: 0.6rem 1.2rem;
   font-size: 1rem;
   border: none;
-  background-color: #007bff;
+  background-color: #007bff; /* Bootstrap primary color */
   color: white;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 .planCard ul li{
-  list-style: none;
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
+  color: #6c757d; /* Muted text color for list items */
 }
-
-/* .subscription-page {
-  padding: 2rem;
-  text-align: center;
-}
-
-.plans {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.plan-card {
-  border: 2px solid #ccc;
-  padding: 2rem;
-  border-radius: 10px;
-  width: 280px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: 0.3s;
-}
-
-.plan-card:hover {
-  transform: scale(1.05);
-}
-
-.plan-card h2 {
-  margin-bottom: 1rem;
-}
-
-.plan-card ul {
-  list-style: none;
-  padding: 0;
-  text-align: left;
-}
-
-.plan-card li {
-  margin: 0.5rem 0;
-}
-
-.plan-card button {
-  margin-top: 1rem;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.plan-card.free {
-  border-color: #28a745;
-}
-
-.plan-card.premium {
-  border-color: #ffc107;
-} */

@@ -308,7 +308,7 @@ const CreateInvoice = () => {
       <form onSubmit={handleSubmit}>
         <div className="section">
          <div className={styles.firstSection}>
-          <div className={styles.sellerSection}>
+          {/* <div className={styles.sellerSection}>
           <h2>Seller Details</h2>
         <div>
           <div className={[styles.sellerInputSection, styles.sellerNameInput].join(" ")}>
@@ -352,7 +352,7 @@ const CreateInvoice = () => {
           <input type="text" placeholder="IFSC" id="ifsc" name="ifsc" value={form.sellerDetails.ifsc} onChange={(e) => handleChange("sellerDetails","ifsc",e.target.value)} required/>
           </div>
         </div>
-        </div>
+        </div> */}
 
            <div className={styles.invoiceSection}>
             <div className={styles.invoiceValuesSection}>
@@ -383,39 +383,39 @@ const CreateInvoice = () => {
           <div className={styles.billToSection}>
             <h2>Bill To</h2>
 
-        <div className={[styles.buyerInputSection, styles.buyerNameInput].join(" ")}>
+        <div className={[styles.buyerInputSection, styles.buyerNameInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="buyerName">Name *</label>
           <input type="text" placeholder="Name" id="buyerName" name="buyerName" value={form.buyerDetails.name} onChange={(e) => handleChange("buyerDetails","name",e.target.value)} required/>
         </div>
-        <div className={[styles.buyerInputSection, styles.buyerAddressLine1Input].join(" ")}>
+        <div className={[styles.buyerInputSection, styles.buyerAddressLine1Input, styles.billingInputSection].join(" ")}>
           <label htmlFor="buyerAddressLine1">Address*</label>
           <input type="text" placeholder="Address Line 1" id="buyerAddressLine1" name="buyerAddressLine1" value={form.buyerDetails.addressLine1} onChange={(e) => handleChange("buyerDetails","addressLine1",e.target.value)} required/>
         </div>
-        <div className={[styles.buyerInputSection, styles.buyerAddressLine2Input].join(" ")}>
+        <div className={[styles.buyerInputSection, styles.buyerAddressLine2Input, styles.billingInputSection].join(" ")}>
           <label htmlFor="buyerAddressLine2">Address</label>
           <input type="text" placeholder="Address Line 2" id="buyerAddressLine2" name="buyerAddressLine2" value={form.buyerDetails.addressLine2} onChange={(e) => handleChange("buyerDetails","addressLine2",e.target.value)}/>
         </div>
-        <div className={[styles.buyerInputSection, styles.buyerPostalCodeInput].join(" ")}>
+        <div className={[styles.buyerInputSection, styles.buyerPostalCodeInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="buyerPostalCode">Area Code *</label>
           <input type="text" placeholder="Postal Code" id="buyerPostalCode" name="pincode" value={form.buyerDetails.pincode} onChange={(e) => handleChange("buyerDetails","pincode",e.target.value)} required/>
         </div>
-        <div className={[styles.buyerInputSection, styles.buyerCityInput].join(" ")}>
+        <div className={[styles.buyerInputSection, styles.buyerCityInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="buyerCity">City </label>
           <input type="text" placeholder="City" id="buyerCity" name="buyerCity" value={form.buyerDetails.city} onChange={(e) => handleChange("buyerDetails","city",e.target.value)} readOnly/>
         </div>
-        <div className={[styles.buyerInputSection, styles.buyerStateInput].join(" ")}>
+        <div className={[styles.buyerInputSection, styles.buyerStateInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="buyerState">State </label>
           <input type="text" placeholder="State" id="buyerState" name="buyerState" value={form.buyerDetails.state} onChange={(e) => handleChange("buyerDetails","state",e.target.value)} readOnly/>
         </div>
-        <div className={[styles.buyerInputSection, styles.buyerCountryInput].join(" ")}>
+        <div className={[styles.buyerInputSection, styles.buyerCountryInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="buyerCountry">Country </label>
           <input type="text" placeholder="Country" id="buyerCountry" name="buyerCountry" value={form.buyerDetails.country} onChange={(e) => handleChange("buyerDetails","country",e.target.value)} readOnly/>
         </div>
-        <div className={[styles.buyerInputSection, styles.buyerPhoneInput].join(" ")}>
+        <div className={[styles.buyerInputSection, styles.buyerPhoneInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="buyerPhone">Phone *</label>
           <input type="text" placeholder="Phone" id="buyerPhone" name="buyerPhone" value={form.buyerDetails.phone} onChange={(e) => handleChange("buyerDetails","phone",e.target.value)}/>
         </div>
-        <div className={[styles.buyerInputSection, styles.buyerEmailInput].join(" ")}>
+        <div className={[styles.buyerInputSection, styles.buyerEmailInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="buyerEmail">Email *</label>
           <input type="email" placeholder="Email" id="buyerEmail" name="buyerEmail" value={form.buyerDetails.email} onChange={(e) => handleChange("buyerDetails","email",e.target.value)}/>
         </div>
@@ -423,46 +423,46 @@ const CreateInvoice = () => {
 
         <div className={styles.shipToCheckbox}>
           <label>
-            <input type="checkbox" onChange={copyBuyerToShip} /> Copy From Bill To
+            <span>Copy From Bill To</span> <input type="checkbox" onChange={copyBuyerToShip} />
           </label>
         </div>
 
         <div className={styles.shipToSection}>
           <h2>Ship To</h2>
 
-         <div className={[styles.shipToInputSection, styles.shipToInput].join(" ")}>
+         <div className={[styles.shipToInputSection, styles.shipToInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="shipToName">Name *</label>
           <input type="text" placeholder="Name" value={form.shipTo.name} onChange={(e) => handleChange("shipTo","name",e.target.value)} required/>
         </div>
-        <div className={[styles.shipToInputSection, styles.shipToAddressLine1Input].join(" ")}>
+        <div className={[styles.shipToInputSection, styles.shipToAddressLine1Input, styles.billingInputSection].join(" ")}>
           <label htmlFor="shipToAddressLine1">Address*</label>
           <input type="text" placeholder="Address Line 1" value={form.shipTo.addressLine1} onChange={(e) => handleChange("shipTo","addressLine1",e.target.value)} required/>
         </div>
-        <div className={[styles.shipToInputSection, styles.shipToAddressLine2Input].join(" ")}>
+        <div className={[styles.shipToInputSection, styles.shipToAddressLine2Input, styles.billingInputSection].join(" ")}>
           <label htmlFor="shipToAddressLine2">Address</label>
           <input type="text" placeholder="Address Line 2" value={form.shipTo.addressLine2} onChange={(e) => handleChange("shipTo","addressLine2",e.target.value)}/>
         </div>
-        <div className={[styles.shipToInputSection, styles.shipToPostalCodeInput].join(" ")}>
+        <div className={[styles.shipToInputSection, styles.shipToPostalCodeInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="shipToPostalCode">Area Code *</label>
           <input type="text" placeholder="Postal Code" name="pincode" value={form.shipTo.pincode} onChange={(e) => handleChange("shipTo","pincode",e.target.value)} required/>
         </div>
-        <div className={[styles.shipToInputSection, styles.shipToCityInput].join(" ")}>
+        <div className={[styles.shipToInputSection, styles.shipToCityInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="shipToCity">City </label>
           <input type="text" placeholder="City" value={form.shipTo.city} onChange={(e) => handleChange("shipTo","city",e.target.value)} readOnly/>
         </div>
-        <div className={[styles.shipToInputSection, styles.shipToStateInput].join(" ")}>
+        <div className={[styles.shipToInputSection, styles.shipToStateInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="shipToState">State </label>
           <input type="text" placeholder="State" value={form.shipTo.state} onChange={(e) => handleChange("shipTo","state",e.target.value)} readOnly/>
         </div>
-        <div className={[styles.shipToInputSection, styles.shipToCountryInput].join(" ")}>
+        <div className={[styles.shipToInputSection, styles.shipToCountryInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="shipToCountry">Country </label>
           <input type="text" placeholder="Country" value={form.shipTo.country} onChange={(e) => handleChange("shipTo","country",e.target.value)} readOnly/>
         </div>
-        <div className={[styles.shipToInputSection, styles.shipToPhoneInput].join(" ")}>
+        <div className={[styles.shipToInputSection, styles.shipToPhoneInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="shipToPhone">Phone *</label>
           <input type="text" placeholder="Phone" value={form.shipTo.phone} onChange={(e) => handleChange("shipTo","phone",e.target.value)}/>
         </div>
-        <div className={[styles.shipToInputSection, styles.shipToEmailInput].join(" ")}>
+        <div className={[styles.shipToInputSection, styles.shipToEmailInput, styles.billingInputSection].join(" ")}>
           <label htmlFor="shipToEmail">Email *</label>
           <input type="email" placeholder="Email" value={form.buyerDetails.email} onChange={(e) => handleChange("shipTo","email",e.target.value)}/>
         </div>
@@ -477,6 +477,8 @@ const CreateInvoice = () => {
               <div className={styles.productsHeaderStatusBtn}>
                 {/* <label>Status</label> */}
         <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+          <option value="" hidden>Select Status</option>
+          <option value="draft">Draft</option>
           <option value="unpaid">Unpaid</option>
           <option value="paid">Paid</option>
           <option value="overdue">Overdue</option>
@@ -518,10 +520,11 @@ const CreateInvoice = () => {
               ))}
             </tbody>
           </table>
+          <h3 className={styles.totalAmount}><span className={styles.totalAmountText}>Total:</span> <span className={styles.totalAmountValue}>₹{form.totalAmount.toLocaleString("en-IN")}</span></h3>
         </div>
         
 
-        <h3 className={styles.totalAmount}><span className={styles.totalAmountText}>Total:</span> <span className={styles.totalAmountValue}>₹{form.totalAmount.toLocaleString("en-IN")}</span></h3>
+        
       </form>
     </div>
     </div>

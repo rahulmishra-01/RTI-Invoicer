@@ -24,15 +24,15 @@ Font.register({
 });
 
 const styles = StyleSheet.create({
-  page: { padding: 30, fontSize: 10, lineHeight: 1.4, position: "relative", fontFamily: "Roboto" },
-  section: { marginTop: 30 },
-  row: { flexDirection: "row", justifyContent: "space-between" },
-  bold: { fontFamily: "Roboto", fontWeight: "bold" },
-  heading: { fontSize: 14, marginBottom: 5 },
-  tableHeader: { backgroundColor: "#eee", padding: 4, fontWeight: "bold" },
-  tableCell: { padding: 4, borderBottom: "1px solid #ddd" },
-  footerText: { textAlign: "center", marginTop: 30, fontSize: 9, position: "absolute", bottom: 30, left: 0, right: 0 },
-  authorisedSignatory: { textAlign: "right", marginTop: 80, fontSize: 10 },
+  page: { padding: 30, fontFamily: "Roboto", fontSize: 10 },
+  section: {  marginBottom: 20 , padding: 10, border: "1px solid #ddd", borderRadius: 5 },
+  row: { flexDirection: "row", justifyContent: "space-between", marginBottom: 10, alignItems: "flex-start" ,  flexWrap: "wrap"},
+  bold: { fontWeight: "bold" , fontFamily: "Roboto", fontSize: 10 , marginBottom: 5, textTransform: "uppercase", color: "#333", letterSpacing: 0.5 , marginTop: 5 },
+  heading: { fontSize: 14, fontWeight: "bold", textAlign: "center", textTransform: "uppercase", color: "#333", letterSpacing: 1 , marginTop: 10 , marginBottom: 20 , fontFamily: "Roboto" , borderBottom: "2px solid #ddd", paddingBottom: 5 },
+  tableHeader: { flexDirection: "row", backgroundColor: "#f7f7f7", padding: 5, borderBottom: "2px solid #ddd", marginBottom: 5, fontFamily: "Roboto", fontSize: 10, fontWeight: "bold" },
+  tableCell: { flex: 1, padding: 5, borderBottom: "1px solid #ddd", fontFamily: "Roboto", fontSize: 10 , textAlign: "left" },
+  footerText: { textAlign: "center", fontSize: 8, color: "#777", marginTop: 20, fontFamily: "Roboto", letterSpacing: 0.5, marginBottom: 10 },
+  authorisedSignatory: { textAlign: "right", fontSize: 10, fontWeight: "bold", marginTop: 20, fontFamily: "Roboto", color: "#333", letterSpacing: 0.5, marginBottom: 10 },
 });
 
 const InvoicePDF = ({ invoice }) => {
