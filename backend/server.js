@@ -6,6 +6,7 @@ const cors = require("cors");
 const allowedOrigins = [
   "http://localhost:5173",
   "https://rtinvoicer.netlify.app",
+  "https://rti-invoicer-backend.onrender.com",
 ];
 
 const app = express();
