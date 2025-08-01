@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../pages/profile/Profile.module.css";
 import { toast } from "react-toastify";
-
+import { useNavigate } from "react-router-dom";
 const UserInvoices = () => {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchInvoices = async () => {
     try {
@@ -77,6 +78,8 @@ const UserInvoices = () => {
                 <td className={styles.tablesBtn}>
                   {/* <button  onClick={() => handleDownload(inv._id)}>Download</button> */}
                   <button  onClick={() => handleDelete(inv._id)}>Delete</button>
+                  <button  onClick={() => navigate(`/invoices/${inv._id}/preview`)}>View</button>
+                  <button  onClick={() => navigate(`/invoices/${inv._id}/edit`)}>Edit</button>
                 </td>
               </tr>
             ))}

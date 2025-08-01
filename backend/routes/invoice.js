@@ -3,6 +3,7 @@ const router = express.Router();
 const Invoice = require("../models/Invoice");
 const jwt = require("jsonwebtoken");
 const {generateInvoicePDF, generateInvoiceNumber} = require("../utils/generateInvoicePDF");
+const invoiceController = require("../controllers/invoiceController");
 // const authMiddleware = require("../")
 
 const authMiddleware = (req,res,next) => {
@@ -100,5 +101,7 @@ router.delete("/:id",authMiddleware,async(req,res) => {
         res.status(500).json({message:"Error deleting invoice"});
     };
 });
+
+router.put("/:id", authMiddleware, invoiceController.updateInvoice);
 
 module.exports = router;

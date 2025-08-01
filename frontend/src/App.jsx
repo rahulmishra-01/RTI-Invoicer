@@ -16,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ForgotPassword from "./pages/forgotPassword/ForgotPassword";
 import VerifyResetOtp from "./pages/forgotPassword/VerifyResetOtp";
 import ResetPassword from "./pages/forgotPassword/ResetPassword";
+import EditInvoice from "./pages/invoice/EditInvoice";
 
 const PrivateRoute = ({children}) => {
   const token = localStorage.getItem("token");
@@ -48,6 +49,7 @@ const App = () => {
       <Route path="/profile" element={<PrivateRoute><Profile/></PrivateRoute>}/>
       <Route path="/subscription" element={<PrivateRoute><Subscription/></PrivateRoute>}/>
       <Route path="/invoices/:id/preview" element={<PrivateRoute><InvoicePreview/></PrivateRoute>}/>
+      <Route path="/invoices/:id/edit" element={<PrivateRoute><EditInvoice/></PrivateRoute>}/>
       <Route path="*" element={<h2 style={{textAlign:"center", marginTop:"2rem"}}>404 - Page Not Found</h2>}/>
     </Routes>
     </>

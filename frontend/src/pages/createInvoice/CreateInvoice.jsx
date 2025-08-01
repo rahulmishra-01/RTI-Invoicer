@@ -300,7 +300,7 @@ const CreateInvoice = () => {
       toast.error("Failed to create invoice");
     }
   };
-
+console.log(form);
   return (
     <div className={styles.container}>
       <div className={styles.invoice}>

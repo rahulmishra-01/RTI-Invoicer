@@ -197,7 +197,6 @@ const styles = StyleSheet.create({
     color: "#333",
     letterSpacing: 0.5,
     marginTop: 10,
-    marginBottom: 10,
   },
   Watermark:{
     marginTop:5,
