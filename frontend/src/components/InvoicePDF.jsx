@@ -1,5 +1,5 @@
 import React from "react";
-import { toWords } from "number-to-words";
+import {ToWords} from "to-words";
 import {
   Document,
   Page,
@@ -210,6 +210,16 @@ const InvoicePDF = ({ invoice }) => {
   const products = invoice.products || [];
   const total = invoice.totalAmount || 0;
 
+  const toWords = new ToWords({
+  localeCode: "en-IN",
+  converterOptions: {
+    currency: false, // <--- IMPORTANT: set to false for lakh/crore
+    ignoreDecimal: false,
+    ignoreZeroCurrency: false,
+    doNotAddOnly: true,
+  },
+});
+
   const taxRate = products.length ? products[0].tax : 0;
   const subtotal = products.reduce(
     (acc, item) =>
@@ -304,7 +314,7 @@ const InvoicePDF = ({ invoice }) => {
         <View style={[styles.section, styles.totalsSection]}>
           <View>
             <Text>Grand Total (in words)</Text>
-            <Text style={styles.totalInWords}>INR {toWords(total)} Only</Text>
+            <Text style={styles.totalInWords}>INR {toWords.convert(total)} Only</Text>
           </View>
           <View style={styles.totalSection}>
             {/* Bank Details + Signatory */}
