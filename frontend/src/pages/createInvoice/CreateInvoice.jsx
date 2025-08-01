@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./CreateInvoice.module.css";
 import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
 
 const CreateInvoice = () => {
   const [invoiceCount, setInvoiceCount] = useState(0);
   const [userData,setUserData] = useState([]);
   const [productList, setProductList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const userId = JSON.parse(localStorage.getItem("user"))?.id;
@@ -175,10 +177,6 @@ const CreateInvoice = () => {
     fetchProduct();
   }, [])
 
-  useEffect(() => {
-    // console.log(productList);
-  }, [productList]);
-
   const handleChange = async (section, field, value) => {
     setForm((prev) => ({
       ...prev,
@@ -273,6 +271,7 @@ const CreateInvoice = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if(userData.plan === "free" && invoiceCount >= 3){
         alert("Invoice limit reached for Free Plan. Upgrade to Premium.")
         return;
@@ -294,13 +293,25 @@ const CreateInvoice = () => {
         headers: {Authorization: `Bearer ${localStorage.getItem("token")}`},
       });
       }
+
+      // await new Promise((resolve) => setTimeout(resolve, 10000)); // Simulate delay
       navigate("/dashboard");
       toast.success("Invoice created successfully!");
     } catch (error) {
       toast.error("Failed to create invoice");
+    } finally{
+      setIsLoading(false);
     }
   };
-console.log(form);
+  
+  if (isLoading) {
+  return (
+    <div className={styles.loading}>
+      <ClipLoader color="#36d7b7" loading={isLoading} size={50} />
+      <span>Creating Invoice...</span>
+    </div>
+  );
+}
   return (
     <div className={styles.container}>
       <div className={styles.invoice}>
