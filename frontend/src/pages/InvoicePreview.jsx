@@ -44,7 +44,7 @@ const InvoicePreview = () => {
                 <h2>Invoice Actions</h2>
 
                 <PDFDownloadLink document={<InvoicePDF invoice={invoice}/>} fileName={`${invoice.invoiceNumber}.pdf`} style={{textDecoration:"none", padding:"0.6rem 1.2rem", backgroundColor:"#4CAF50", color:"#fff", borderRadius:"5px", fontWeight:"bold"}}>
-                    Download PDF
+                    {({loading}) => (loading ? "Preparing document..." : "Download PDF")}
                 </PDFDownloadLink>
 
                 {/* <button style={{padding:"0.6rem 1.2rem", backgroundColor: "#2196F3", color:"#fff", border:"none", borderRadius:"5px", cursor:"pointer", fontWeight:"bold"}}>Send to Email</button> */}
