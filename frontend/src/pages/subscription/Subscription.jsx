@@ -1,7 +1,10 @@
 import styles from "./Subscription.module.css";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Subscription = () => {
+    const navigate = useNavigate();
 
     const handlePayment = async () => {
         try {
@@ -46,10 +49,10 @@ const Subscription = () => {
                     Authorization:`Bearer ${localStorage.getItem("token")}`,
                 }
             });
-            console.log(res.data)
-            alert(`Subscribed to ${plan} plan!`);
+            toast.success(`Subscribed to ${plan} plan!`);
+            navigate("/dashboard");
         } catch (error) {
-            alert("Subscription failed");
+            toast.error("Subscription failed");
         }
     }
     return(
