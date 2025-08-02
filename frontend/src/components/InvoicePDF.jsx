@@ -209,12 +209,11 @@ const InvoicePDF = ({ invoice }) => {
   const sh = invoice.shipTo || {};
   const products = invoice.products || [];
   const total = invoice.totalAmount || 0;
-
   const toWords = new ToWords({
   localeCode: "en-IN",
   converterOptions: {
     currency: false, // <--- IMPORTANT: set to false for lakh/crore
-    ignoreDecimal: false,
+    ignoreDecimal: true,
     ignoreZeroCurrency: false,
     doNotAddOnly: true,
   },
@@ -229,6 +228,7 @@ const InvoicePDF = ({ invoice }) => {
     0
   );
   const taxAmount = subtotal * (taxRate / 100);
+
   return (
     <Document>
       <Page style={styles.page}>

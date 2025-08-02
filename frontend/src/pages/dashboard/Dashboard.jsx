@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "./Dashboard.module.css";
 import { useNavigate } from "react-router-dom";
 import { pdf } from "@react-pdf/renderer";
+import { ClipLoader } from "react-spinners";
 import InvoicePDF from "../../components/InvoicePDF";
 import { toast } from "react-toastify";
 
@@ -10,6 +11,7 @@ const Dashboard = () => {
   const [invoices, setInvoices] = useState([]);
   const [userData, setUserData] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
+  const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [invoiceCount, setInvoiceCount] = useState(0);
   const navigate = useNavigate();
@@ -27,7 +29,6 @@ const Dashboard = () => {
         );
         setUserData(res.data);
       } catch (error) {
-        // alert("Failed to fetch userData");
         toast.error("Failed to fetch User Data!");
       }
     };
@@ -48,7 +49,6 @@ const Dashboard = () => {
         );
         setInvoices(res.data);
       } catch (error) {
-        // alert("Failed to fetch invoices");
         toast.error("Failed to fetch invoices");
       }
       setLoading(false);
@@ -68,49 +68,17 @@ const Dashboard = () => {
           }
         );
         setInvoiceCount(res.data.length);
-        // console.log(res.data.length)
       } catch (error) {
-        // console.error("Failed to fetch invoices",error);
         toast.error("Failed to fetch invoices");
       }
     };
     fetchInvoices();
   }, []);
 
-  // console.log(invoices)
-
   const countStatus = (status) => {
     return invoices.filter((inv) => inv.status === status).length;
   };
-
-  // console.log(countStatus("unpaid"))
-
-  // const downloadInvoicePDF = async (id, filename) => {
-  //   try {
-  //     const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/${id}/pdf`,{
-  //       responseType: "blob",
-  //       headers:{
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`
-  //       }
-  //     });
-
-  //     const blob = new Blob([res.data],{type:"application/pdf"});
-  //     const url = window.URL.createObjectURL(blob);
-
-  //     const link = document.createElement("a");
-  //     link.href = url;
-  //     link.download = filename;
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     link.remove();
-
-  //     window.URL.revokeObjectURL(url);
-  //   } catch (error) {
-  //     alert("Download failed");
-  //     // console.error(error);
-  //   }
-  // };
-
+  
   const downloadPDF = async (invoice) => {
     const blob = await pdf(<InvoicePDF invoice={invoice} />).toBlob();
     const url = URL.createObjectURL(blob);
@@ -127,9 +95,8 @@ const Dashboard = () => {
       {loading && <p>Loading...</p>}
       <div className={styles.dashboard}>
         <div className={styles.dashboardUpperNav}>
-          <h2>Welcome, {user?.name}</h2>
+          <h2><span>Welcome,</span> <span>{user?.name}</span></h2>
           <h3>{userData?.plan}</h3>
-          {console.log(userData)}
         </div>
 
         <div className={styles.stats}>
@@ -169,7 +136,7 @@ const Dashboard = () => {
               <th className={styles.tableHeading}>Buyer</th>
               <th className={styles.tableHeading}>Total</th>
               <th className={styles.tableHeading}>Status</th>
-              <th className={styles.tableHeading}>PDF</th>
+              <th className={[styles.tableHeading, styles.hideOnMobile].join(" ")}>PDF</th>
             </tr>
           </thead>
           <tbody>
@@ -184,10 +151,9 @@ const Dashboard = () => {
                   ₹{inv.totalAmount.toLocaleString("en-IN")}
                 </td>
                 <td className={styles.tableData}>{inv.status}</td>
-                <td className={[styles.tableData, styles.tablesBtn].join(" ")}>
+                <td className={[styles.tableData, styles.tablesBtn, styles.hideOnMobile].join(" ")}>
                   <button
                     className={[styles.downloadBtn, styles.pdfBtn].join(" ")}
-                    // onClick={() => downloadInvoicePDF(inv._id,`${inv.invoiceNumber}.pdf`)}
                     onClick={() => downloadPDF(inv)}
                   >
                     Download
@@ -209,20 +175,6 @@ const Dashboard = () => {
             ))}
           </tbody>
         </table>
-        {/* <button
-          style={{
-            background: "#f33",
-            color: "#fff",
-            padding: "0.5rem 1rem",
-            marginTop: "1rem",
-          }}
-          onClick={() => {
-            localStorage.clear();
-            window.location.href = "/login";
-          }}
-        >
-          Logout
-        </button> */}
       </div>
     </>
   );

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../pages/profile/Profile.module.css"; // Reuse same CSS
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const UserInfo = () => {
   // const isValidPAN = (pan) => /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan.toUpperCase());
@@ -27,6 +28,8 @@ const UserInfo = () => {
   const [panError, setPanError] = useState("");
 
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -113,6 +116,7 @@ const UserInfo = () => {
       });
       // alert("Profile updated successfully!");
       toast.success("Profile updated successfully!");
+      navigate("/dashboard")
     } catch (err) {
       // alert("Update failed");
       toast.error("Failed to update profile");

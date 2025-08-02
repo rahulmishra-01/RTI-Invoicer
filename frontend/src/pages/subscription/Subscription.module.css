@@ -4,61 +4,66 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 90vh;
-  background-color: #f8f9fa; /* Light background for better contrast */
+  background-color: #f8f9fa;
+  /* border: 1px solid black; */
 }
 .subscriptionPageContainer h1{
   margin-bottom: 20px;
-  color: #343a40; /* Darker text for better readability */
+  color: #343a40;
   font-size: 2rem;
   font-weight: bold;
 }
 .plansContainer{
+  /* border: 1px solid black; */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  max-width: 1200px;
   width: 100%;
-  max-width: 1200px; /* Limit the width for better layout on larger screens */
   padding: 20px;
 }
 .plans{
+  /* border: 1px solid black; */
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   gap: 20px;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  background-color: white; /* White background for contrast */
+  background-color: white;
 }
 .planCard{
-  border: 2px solid #ccc; /* Light border for separation */
+  /* border: 1px solid black; */
   padding: 20px;
   border-radius: 10px;
-  width: 280px; /* Fixed width for each plan card */
+  max-width: 280px;
+  width: 100%;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: transform 0.3s;
 }
-.free{
-  border: 1px solid #28a745; /* Green border for free plan */
-  background-color: #d4edda; /* Light green background for free plan */
+.planCard ul li{
+  list-style: none;
+}
+/* .free{
+  border: 1px solid #28a745;
+  background-color: white;
 }
 .premium{
-  border: 1px solid #007bff; /* Blue border for premium plan */
-  background-color: #cce5ff; /* Light blue background for premium plan */
-}
+  border: 1px solid #007bff;
+  background-color: white;
+} */
 .planCard h2{
   margin-bottom: 1rem;
-  color: #495057; /* Darker text for better readability */
+  color: #495057;
 }
 .planCard button{
   margin-top: 1rem;
   padding: 0.6rem 1.2rem;
   font-size: 1rem;
   border: none;
-  background-color: #007bff; /* Bootstrap primary color */
+  background-color: #007bff;
   color: white;
   border-radius: 6px;
   cursor: pointer;
@@ -66,5 +71,22 @@
 }
 .planCard ul li{
   margin-bottom: 0.5rem;
-  color: #6c757d; /* Muted text color for list items */
+  color: #6c757d;
+}
+
+@media (max-width: 568px){
+  .plansContainer{
+  padding: 0px;
+}
+.subscriptionPageContainer h1{
+  margin-bottom: 20px;
+  color: #343a40;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+  .plans{
+  flex-direction: column;
+  padding: 0px;
+  background-color: transparent;
+}
 }

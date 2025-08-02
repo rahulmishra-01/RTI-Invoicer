@@ -2,13 +2,34 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
 import styles from "./EditInvoice.module.css"; // Assuming you have a CSS module for styles
+import { MdDelete, MdAdd, MdSave, MdEdit } from "react-icons/md";
 
 const EditInvoice = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [form, setForm] = useState(null);
   const [productList, setProductList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [editProductModal, setEditProductModal] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    description: "",
+    hsn: "",
+    quantity: 1,
+    rate: 0,
+    discount: 0,
+    tax: 0,
+    amount: 0,
+  });
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 786);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 786);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchInvoice = async () => {
@@ -33,16 +54,119 @@ const EditInvoice = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/product/all`,{
-          headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}, 
-        });
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/product/all`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setProductList(res.data);
       } catch (err) {
         console.error("Error fetching products", err);
       }
     };
     fetchProduct();
-  }, [])
+  }, []);
+
+  const handleProductModalSubmit = (e) => {
+    e.preventDefault();
+
+    if (
+      !newProduct.description ||
+      !newProduct.hsn ||
+      !newProduct.quantity ||
+      !newProduct.rate
+    ) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    const { quantity, rate, discount, tax } = newProduct;
+    let amount = quantity * rate;
+    let discountAmount = amount * (discount / 100);
+    let taxedAmount = (amount - discountAmount) * (tax / 100);
+    newProduct.amount =
+      Math.floor((amount - discountAmount + taxedAmount) * 100) / 100;
+
+    setForm((prevForm) => ({
+      ...prevForm,
+      products: [...prevForm.products, { ...newProduct }],
+      totalAmount: prevForm.totalAmount + newProduct.amount,
+    }));
+    setShowProductModal(false);
+    setNewProduct({
+      description: "",
+      hsn: "",
+      quantity: 1,
+      rate: 0,
+      discount: 0,
+      tax: 0,
+      amount: 0,
+    });
+  };
+
+  const handleModalProductChange = (field, value) => {
+    const numericFields = ["quantity", "rate", "discount", "tax"];
+    let updatedProduct = {
+      ...newProduct,
+      [field]: numericFields.includes(field) ? Number(value) : value,
+    };
+
+    if (field === "description") {
+      const matched = productList.find(
+        (p) => p.description.toLowerCase() === value.toLowerCase()
+      );
+      if (matched) {
+        updatedProduct = {
+          ...updatedProduct,
+          hsn: matched.hsn,
+          rate: matched.rate,
+          discount: matched.discount,
+          tax: matched.tax,
+        };
+      }
+    }
+
+    const { quantity, rate, discount, tax } = updatedProduct;
+    let amount = quantity * rate;
+    let discountAmount = amount * (discount / 100);
+    let taxedAmount = (amount - discountAmount) * (tax / 100);
+    updatedProduct.amount =
+      Math.floor((amount - discountAmount + taxedAmount) * 100) / 100;
+
+    setNewProduct(updatedProduct);
+  };
+
+  const handleEditProductModalSubmit = () => {
+    const updatedProducts = [...form.products];
+
+    const index = form.products.findIndex(
+      (p) => p.description === newProduct.description
+    );
+
+    updatedProducts[index] = { ...newProduct };
+
+    const total = updatedProducts.reduce((acc, item) => acc + item.amount, 0);
+
+    setForm((prevForm) => ({
+      ...prevForm,
+      products: updatedProducts,
+      totalAmount: total,
+    }));
+
+    setEditProductModal(false);
+    setNewProduct({
+      description: "",
+      hsn: "",
+      quantity: 1,
+      rate: 0,
+      discount: 0,
+      tax: 0,
+      amount: 0,
+    });
+  };
 
   const handleChange = async (section, field, value) => {
     setForm((prev) => ({
@@ -53,12 +177,14 @@ const EditInvoice = () => {
       },
     }));
 
-    if (field === "pincode" && value.length === 6){
+    if (field === "pincode" && value.length === 6) {
       try {
-        const response = await axios.get(`https://api.postalpincode.in/pincode/${value}`);
+        const response = await axios.get(
+          `https://api.postalpincode.in/pincode/${value}`
+        );
         const data = response.data[0];
 
-        if(data.Status === "Success") {
+        if (data.Status === "Success") {
           const postOffice = data.PostOffice[0];
           setForm((prev) => ({
             ...prev,
@@ -70,7 +196,7 @@ const EditInvoice = () => {
               country: postOffice.Country || "",
             },
           }));
-        }else {
+        } else {
           toast.error("Invalid Pincode");
         }
       } catch (error) {
@@ -82,14 +208,16 @@ const EditInvoice = () => {
   const handleProductChange = async (index, field, value) => {
     const updated = [...form.products];
     const numericFields = ["quantity", "rate", "discount", "tax"];
-    updated[index][field] = numericFields.includes(field) ? Number(value) : value;
+    updated[index][field] = numericFields.includes(field)
+      ? Number(value)
+      : value;
 
-    if (field === "description"){
+    if (field === "description") {
       const matched = productList.find(
         (p) => p.description.toLowerCase() === value.toLowerCase()
       );
       // console.log(matched)
-      if(matched){
+      if (matched) {
         updated[index].hsn = matched.hsn;
         updated[index].rate = matched.rate;
         updated[index].discount = matched.discount;
@@ -101,13 +229,12 @@ const EditInvoice = () => {
     let amount = quantity * rate;
     let discountAmount = amount * (discount / 100);
     let taxedAmount = (amount - discountAmount) * (tax / 100);
-    updated[index].amount = Math.floor((amount - discountAmount + taxedAmount) * 100) / 100;
+    updated[index].amount =
+      Math.floor((amount - discountAmount + taxedAmount) * 100) / 100;
 
     const total = updated.reduce((acc, item) => acc + item.amount, 0);
     setForm({ ...form, products: updated, totalAmount: total });
   };
-
- 
 
   const copyBuyerToShip = (e) => {
     if (e.target.checked) {
@@ -130,21 +257,29 @@ const EditInvoice = () => {
           discount: 0,
           tax: 0,
           amount: 0,
-        }
+        },
       ];
-      const newTotal = newProduct.reduce((acc, item) => acc + (item.amount || 0), 0);
+      const newTotal = newProduct.reduce(
+        (acc, item) => acc + (item.amount || 0),
+        0
+      );
       return {
         ...prevForm,
         products: newProduct,
         totalAmount: newTotal,
       };
-    })
+    });
   };
 
   const handleDeleteProduct = (indexToDelete) => {
-    if(form.products.length <= 1) return;
-    const updatedProducts = form.products.filter((_,index) => index !== indexToDelete);
-    const newTotal = updatedProducts.reduce((acc, item) => acc + (item.amount || 0), 0);
+    if (form.products.length <= 1) return;
+    const updatedProducts = form.products.filter(
+      (_, index) => index !== indexToDelete
+    );
+    const newTotal = updatedProducts.reduce(
+      (acc, item) => acc + (item.amount || 0),
+      0
+    );
     setForm((prevForm) => ({
       ...prevForm,
       products: updatedProducts,
@@ -154,52 +289,61 @@ const EditInvoice = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/${id}`, form, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const newProducts = form.products.filter((product) => !productList.some((saved) => saved.description.toLowerCase() === product.description.toLowerCase()));
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/invoices/${id}`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const newProducts = form.products.filter(
+        (product) =>
+          !productList.some(
+            (saved) =>
+              saved.description.toLowerCase() ===
+              product.description.toLowerCase()
+          )
+      );
 
-      if(newProducts.length > 0) {
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/product/bulk-save`,{
-          userId: userId,
-          products:newProducts,
-        },
-      {
-        headers: {Authorization: `Bearer ${localStorage.getItem("token")}`},
-      });
+      if (newProducts.length > 0) {
+        await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/api/product/bulk-save`,
+          {
+            userId: userId,
+            products: newProducts,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
       }
+      // await new Promise((resolve) => setTimeout(resolve, 10000));
       navigate("/dashboard");
-      toast.success("Invoice created successfully!");
+      toast.success("Invoice Updated successfully!");
     } catch (error) {
       toast.error("Failed to create invoice");
+    } finally{
+      setIsLoading(false);
     }
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     await axios.put(
-  //       `${import.meta.env.VITE_API_BASE_URL}/api/invoices/${id}`,
-  //       form,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }
-  //     );
-  //     navigate("/dashboard");
-  //     toast.success("Invoice updated successfully");
-  //   } catch (error) {
-  //     toast.error("Error updating invoice");
-  //     console.error("Update invoice error:", error);
-  //   }
-  // };
+
+  if(isLoading){
+    return(
+      <div className={styles.loading}>
+         <ClipLoader color="#36d7b7" loading={isLoading} size={50} />
+        <span>Updating Invoice...</span>
+      </div>
+    )
+  }
 
   if (!form) return <div>Loading...</div>;
-  console.log("Form data:", form);
 
   return (
     <div className={styles.container}>
@@ -225,7 +369,9 @@ const EditInvoice = () => {
                       type="date"
                       id="invoiceDate"
                       name="invoiceDate"
-                      value={form.invoiceDate ? form.invoiceDate.slice(0, 10) : ""}
+                      value={
+                        form.invoiceDate ? form.invoiceDate.slice(0, 10) : ""
+                      }
                       onChange={(e) =>
                         setForm({ ...form, invoiceDate: e.target.value })
                       }
@@ -249,7 +395,11 @@ const EditInvoice = () => {
                       type="date"
                       id="buyerOrderDate"
                       name="buyerOrderDate"
-                      value={form.buyerOrderDate ? form.buyerOrderDate.slice(0, 10) : ""}
+                      value={
+                        form.buyerOrderDate
+                          ? form.buyerOrderDate.slice(0, 10)
+                          : ""
+                      }
                       onChange={(e) =>
                         setForm({ ...form, buyerOrderDate: e.target.value })
                       }
@@ -451,14 +601,16 @@ const EditInvoice = () => {
                 </div>
               </div>
 
-              <div className={styles.shipToCheckbox}>
+              
+
+              <div className={styles.shipToSection}>
+                <div className={styles.shipToCheckbox}>
                 <label>
                   <span>Copy From Bill To</span>{" "}
                   <input type="checkbox" onChange={copyBuyerToShip} />
                 </label>
               </div>
 
-              <div className={styles.shipToSection}>
                 <h2>Ship To</h2>
 
                 <div
@@ -625,126 +777,414 @@ const EditInvoice = () => {
             </div>
 
             <div className={styles.productsSection}>
-              <div className={styles.productsHeader}>
-                <h2>Products</h2>
-                <div className={styles.productsHeaderBtns}>
-                  <div className={styles.productsHeaderStatusBtn}>
-                    {/* <label>Status</label> */}
-                    <select
-                      value={form.status}
-                      onChange={(e) =>
-                        setForm({ ...form, status: e.target.value })
-                      }
-                    >
-                      <option value="" hidden>
-                        Select Status
-                      </option>
-                      <option value="draft">Draft</option>
-                      <option value="unpaid">Unpaid</option>
-                      <option value="paid">Paid</option>
-                      <option value="overdue">Overdue</option>
-                    </select>
+              {!isMobile && (
+                <div className={styles.productsHeader}>
+                  <h2>Products</h2>
+                  <div className={styles.productsHeaderBtns}>
+                    <div className={styles.productsHeaderStatusBtn}>
+                      {/* <label>Status</label> */}
+                      <select
+                        value={form.status}
+                        onChange={(e) =>
+                          setForm({ ...form, status: e.target.value })
+                        }
+                      >
+                        <option value="" hidden>
+                          Select Status
+                        </option>
+                        <option value="draft">Draft</option>
+                        <option value="unpaid">Unpaid</option>
+                        <option value="paid">Paid</option>
+                        <option value="overdue">Overdue</option>
+                      </select>
+                    </div>
+                    <button type="submit">💾 Update Invoice</button>
+                    <button type="button" onClick={addProduct}>
+                      + Add Product
+                    </button>
                   </div>
-                  <button type="submit">💾 Update Invoice</button>
-                  <button type="button" onClick={addProduct}>
-                    + Add Product
-                  </button>
                 </div>
-              </div>
+              )}
 
-              <table className={styles.productTable}>
-                <thead className={styles.productTableHead}>
-                  <tr className={styles.productTableRow}>
-                    <th>Description</th>
-                    <th>HSN</th>
-                    <th>Qty</th>
-                    <th>Rate</th>
-                    <th>Discount %</th>
-                    <th>Tax %</th>
-                    <th>Amount</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody className={styles.productTableBody}>
-                  {form.products.map((item, index) => (
-                    <tr key={index}>
-                      <td>
-                        <input
-                          value={item.description}
-                          onChange={(e) =>
-                            handleProductChange(
-                              index,
-                              "description",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                      <td>
-                        <input
-                          value={item.hsn}
-                          onChange={(e) =>
-                            handleProductChange(index, "hsn", e.target.value)
-                          }
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            handleProductChange(
-                              index,
-                              "quantity",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={item.rate}
-                          onChange={(e) =>
-                            handleProductChange(index, "rate", e.target.value)
-                          }
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={item.discount}
-                          onChange={(e) =>
-                            handleProductChange(
-                              index,
-                              "discount",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={item.tax}
-                          onChange={(e) =>
-                            handleProductChange(index, "tax", e.target.value)
-                          }
-                        />
-                      </td>
-                      <td>
-                        <input type="number" value={item.amount} readOnly />
-                      </td>
-                      {/* <td>{item.amount}</td> */}
-                      <td>
-                        <button type="button" onClick={() => handleDeleteProduct(index)}>
-                          Delete
-                        </button>
-                      </td>
+              {isMobile && (
+                <div className={styles.productsHeader}>
+                  <div
+                    className={[
+                      styles.productsHeaderBtns,
+                      styles.mobileProductsHeaderBtns,
+                    ].join(" ")}
+                  >
+                    <div
+                      className={[
+                        styles.productsHeaderStatusBtn,
+                        styles.mobileProductsHeaderStatusBtn,
+                      ].join(" ")}
+                    >
+                      {/* <label>Status</label> */}
+                      <select
+                        value={form.status}
+                        onChange={(e) =>
+                          setForm({ ...form, status: e.target.value })
+                        }
+                      >
+                        <option value="" hidden>
+                          Select Status
+                        </option>
+                        <option value="draft">Draft</option>
+                        <option value="unpaid">Unpaid</option>
+                        <option value="paid">Paid</option>
+                        <option value="overdue">Overdue</option>
+                      </select>
+                    </div>
+                    <div className={styles.productButtons}>
+                      <button type="submit">
+                        <MdSave size={16} />
+                      </button>
+                      <button type="button" onClick={() => setShowProductModal(true)}>
+                        <MdAdd size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {!isMobile && (
+                <table className={styles.productTable}>
+                  <thead className={styles.productTableHead}>
+                    <tr className={styles.productTableRow}>
+                      <th>Description</th>
+                      <th>HSN</th>
+                      <th>Qty</th>
+                      <th>Rate</th>
+                      <th>Discount %</th>
+                      <th>Tax %</th>
+                      <th>Amount</th>
+                      <th>Action</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className={styles.productTableBody}>
+                    {form.products.map((item, index) => (
+                      <tr key={index}>
+                        <td>
+                          <input
+                            value={item.description}
+                            onChange={(e) =>
+                              handleProductChange(
+                                index,
+                                "description",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </td>
+                        <td>
+                          <input
+                            value={item.hsn}
+                            onChange={(e) =>
+                              handleProductChange(index, "hsn", e.target.value)
+                            }
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) =>
+                              handleProductChange(
+                                index,
+                                "quantity",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            value={item.rate}
+                            onChange={(e) =>
+                              handleProductChange(index, "rate", e.target.value)
+                            }
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            value={item.discount}
+                            onChange={(e) =>
+                              handleProductChange(
+                                index,
+                                "discount",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            value={item.tax}
+                            onChange={(e) =>
+                              handleProductChange(index, "tax", e.target.value)
+                            }
+                          />
+                        </td>
+                        <td>
+                          <input type="number" value={item.amount} readOnly />
+                        </td>
+                        {/* <td>{item.amount}</td> */}
+                        <td>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteProduct(index)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+
+              {isMobile && (
+                <table className={styles.productTable}>
+                  <thead
+                    className={[
+                      styles.productTableHead,
+                      styles.productMobileTableHead,
+                    ].join(" ")}
+                  >
+                    <tr className={styles.productTableRow}>
+                      <th>Description</th>
+                      <th>Amount</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    className={[
+                      styles.productTableBody,
+                      styles.mobileProductTableBody,
+                    ].join(" ")}
+                  >
+                    {form.products.map((item, index) => (
+                      <tr key={index}>
+                        <td>
+                          <input
+                            value={item.description}
+                            onChange={(e) =>
+                              handleProductChange(
+                                index,
+                                "description",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </td>
+                        <td>
+                          <input type="number" value={item.amount} readOnly />
+                        </td>
+                        {/* <td>{item.amount}</td> */}
+                        <td className={styles.mobileProductActions}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setNewProduct(form.products[index]);
+                              setEditProductModal(true);
+                            }}
+                          >
+                            <MdEdit size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteProduct(index)}
+                          >
+                            <MdDelete size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+
+              {isMobile && editProductModal && (
+                <div className={styles.productModal}>
+                  <div className={styles.productModalForm}>
+                    <h3>Update Product</h3>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="description">Description</label>
+                    <input
+                      type="text"
+                      placeholder="Description"
+                      value={newProduct.description}
+                      onChange={(e) =>
+                        handleModalProductChange("description", e.target.value)
+                      }
+                      required
+                    />
+                    </div>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                       <label htmlFor="hsn">HSN</label>
+                    <input
+                      type="text"
+                      placeholder="HSN"
+                      value={newProduct.hsn}
+                      onChange={(e) =>
+                        handleModalProductChange("hsn", e.target.value)
+                      }
+                      required
+                    />
+                    </div>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="quantity">Quantity</label>
+                    <input
+                      type="number"
+                      placeholder="Quantity"
+                      value={newProduct.quantity}
+                      onChange={(e) =>
+                        handleModalProductChange("quantity", e.target.value)
+                      }
+                      required
+                    />
+                    </div>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="rate">Rate</label>
+                    <input
+                      type="number"
+                      placeholder="Rate"
+                      value={newProduct.rate}
+                      onChange={(e) =>
+                        handleModalProductChange("rate", e.target.value)
+                      }
+                      required
+                    />
+                    </div>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="discount">Discount</label>
+                    <input
+                      type="number"
+                      placeholder="Discount %"
+                      value={newProduct.discount}
+                      onChange={(e) =>
+                        handleModalProductChange("discount", e.target.value)
+                      }
+                    />
+                    </div>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="tax">Tax</label>
+                    <input
+                      type="number"
+                      placeholder="Tax %"
+                      value={newProduct.tax}
+                      onChange={(e) =>
+                        handleModalProductChange("tax", e.target.value)
+                      }
+                    />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleEditProductModalSubmit}
+                    >
+                      Update
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditProductModal(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {isMobile && showProductModal && (
+                <div className={styles.productModal}>
+                  <div className={styles.productModalForm}>
+                    <h3>Add Product</h3>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="description">Description</label>
+                    <input
+                      type="text"
+                      placeholder="Description"
+                      value={newProduct.description}
+                      onChange={(e) =>
+                        handleModalProductChange("description", e.target.value)
+                      }
+                      required
+                    />
+                    </div>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="hsn">HSN</label>
+                    <input
+                      type="text"
+                      placeholder="HSN"
+                      value={newProduct.hsn}
+                      onChange={(e) =>
+                        handleModalProductChange("hsn", e.target.value)
+                      }
+                      required
+                    />
+                    </div>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="quantity">Quantity</label>
+                    <input
+                      type="number"
+                      placeholder="Quantity"
+                      value={newProduct.quantity}
+                      onChange={(e) =>
+                        handleModalProductChange("quantity", e.target.value)
+                      }
+                      required
+                    />
+                    </div>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="rate">Rate</label>
+                    <input
+                      type="number"
+                      placeholder="Rate"
+                      value={newProduct.rate}
+                      onChange={(e) =>
+                        handleModalProductChange("rate", e.target.value)
+                      }
+                      required
+                    />
+                    </div>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="discount">Discount</label>
+                    <input
+                      type="number"
+                      placeholder="Discount %"
+                      value={newProduct.discount}
+                      onChange={(e) =>
+                        handleModalProductChange("discount", e.target.value)
+                      }
+                    />
+                    </div>
+                    <div className={[styles.productModleInputSection].join(" ")}>
+                      <label htmlFor="tax">Tax</label>
+                    <input
+                      type="number"
+                      placeholder="Tax %"
+                      value={newProduct.tax}
+                      onChange={(e) =>
+                        handleModalProductChange("tax", e.target.value)
+                      }
+                    />
+                    </div>
+                    <button type="button" onClick={handleProductModalSubmit}>
+                      Add
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowProductModal(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <h3 className={styles.totalAmount}>
                 <span className={styles.totalAmountText}>Total:</span>{" "}
                 <span className={styles.totalAmountValue}>
